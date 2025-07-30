@@ -104,7 +104,8 @@ export default function NewsSection({ onIframeOpen }: NewsSectionProps) {
                     <h3 className="mb-2 text-lg font-semibold leading-snug">{item.title}</h3>
                     <AnimatedLinkButton 
                       onClick={() => handleReadMore(item)} 
-                      thumbnail={item.thumbnail} 
+                      thumbnail={item.thumbnail}
+                      text="Read More"
                     />
                   </div>
                 </div>

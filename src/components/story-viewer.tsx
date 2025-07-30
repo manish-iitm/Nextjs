@@ -5,6 +5,7 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Story } from '@/lib/types';
 import { Button } from './ui/button';
 import Image from 'next/image';
+import { AnimatedLinkButton } from './animated-link-button';
 
 interface StoryViewerProps {
   stories: Story[];
@@ -77,14 +78,14 @@ export function StoryViewer({ stories, currentIndex, onClose, onNext, onPrev, on
           </Button>
         )}
         
-        <div className="absolute bottom-12 left-1/2 w-full max-w-lg -translate-x-1/2 px-4 text-center">
+        <div className="absolute bottom-12 left-1/2 w-full max-w-lg -translate-x-1/2 px-4 text-center flex flex-col items-center">
           <h3 className="mb-4 inline-block rounded-full bg-black/50 px-4 py-2 text-white">{story.title}</h3>
           {story.link && (
-             <Button 
-                onClick={() => onLearnMore(story.link, story.title)} 
-                className="bg-pink-600 text-white hover:bg-orange-500 rounded-full font-bold">
-                Learn More
-            </Button>
+             <AnimatedLinkButton 
+                onClick={() => onLearnMore(story.link, story.title)}
+                thumbnail={story.thumbUrl}
+                text="Learn More"
+            />
           )}
         </div>
       </div>

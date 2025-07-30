@@ -8,9 +8,10 @@ import { Link } from 'lucide-react';
 interface AnimatedLinkButtonProps {
   onClick: () => void;
   thumbnail: string;
+  text?: string;
 }
 
-export function AnimatedLinkButton({ onClick, thumbnail }: AnimatedLinkButtonProps) {
+export function AnimatedLinkButton({ onClick, thumbnail, text = 'Read More' }: AnimatedLinkButtonProps) {
   const [isToggled, setIsToggled] = useState(false);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export function AnimatedLinkButton({ onClick, thumbnail }: AnimatedLinkButtonPro
           ? 'left-6 text-white opacity-100'
           : 'right-6 text-foreground opacity-100'
       )}>
-        {isToggled ? 'Opening...' : 'Read More'}
+        {isToggled ? 'Opening...' : text}
       </span>
     </button>
   );
