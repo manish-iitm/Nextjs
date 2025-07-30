@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { StoryViewer } from '@/components/story-viewer';
 import type { Story, InstagramPost } from '@/lib/types';
 import { StoryCard } from '@/components/story-card';
+import { AnimatedLinkButton } from '@/components/animated-link-button';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -102,6 +103,12 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
     closeStory();
     onIframeOpen(url, title);
   }, [onIframeOpen]);
+  
+  const handlePostClick = (post: InstagramPost) => {
+    if (post.link && post.link !== '#') {
+      onIframeOpen(post.link, post.title)
+    }
+  }
 
   return (
     <div className="py-8 px-4 animate-fadeIn">
@@ -135,14 +142,19 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
         ))}
         {errorPosts && <p className="text-destructive text-center col-span-2">{errorPosts}</p>}
         {posts.map((post, index) => (
-          <Card key={index} className="overflow-hidden">
-             <div 
-              className="relative w-full aspect-square cursor-pointer" 
-              onClick={() => post.link && post.link !== '#' && onIframeOpen(post.link, post.title)}>
+          <Card key={index} className="overflow-hidden flex flex-col">
+             <div className="relative w-full aspect-square">
               <Image src={post.imageUrl} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 50vw, 50vw"/>
             </div>
-            <div className="p-4 text-center border-t">
-              <p className="font-semibold">{post.title}</p>
+            <div className="p-4 text-center border-t flex flex-col flex-grow items-center justify-center">
+              <h3 className="font-semibold mb-4 flex-grow">{post.title}</h3>
+              {post.link && post.link !== '#' && (
+                 <AnimatedLinkButton
+                    onClick={() => handlePostClick(post)}
+                    thumbnail={post.imageUrl}
+                    text="View Post"
+                />
+              )}
             </div>
           </Card>
         ))}
