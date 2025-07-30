@@ -126,20 +126,20 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
         </CardContent>
       </Card>
 
-      <div className="mx-auto max-w-lg space-y-6">
-        {loadingPosts && Array.from({ length: 3 }).map((_, i) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {loadingPosts && Array.from({ length: 4 }).map((_, i) => (
           <Card key={i}>
             <Skeleton className="w-full aspect-square" />
             <div className="p-4"><Skeleton className="h-6 w-3/4" /></div>
           </Card>
         ))}
-        {errorPosts && <p className="text-destructive text-center">{errorPosts}</p>}
+        {errorPosts && <p className="text-destructive text-center md:col-span-2">{errorPosts}</p>}
         {posts.map((post, index) => (
           <Card key={index} className="overflow-hidden">
              <div 
               className="relative w-full aspect-square cursor-pointer" 
               onClick={() => post.link && post.link !== '#' && onIframeOpen(post.link, post.title)}>
-              <Image src={post.imageUrl} alt={post.title} fill className="object-cover" sizes="(max-width: 640px) 100vw, 640px"/>
+              <Image src={post.imageUrl} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"/>
             </div>
             <div className="p-4 text-center border-t">
               <p className="font-semibold">{post.title}</p>
