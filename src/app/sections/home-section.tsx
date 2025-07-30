@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StoryViewer } from '@/components/story-viewer';
 import type { Story, InstagramPost } from '@/lib/types';
+import { StoryCard } from '@/components/story-card';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 interface HomeSectionProps {
   onIframeOpen: (url: string, title: string) => void;
@@ -106,25 +107,20 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
     <div className="py-8 px-4 animate-fadeIn">
       <h1 className="mb-8 text-center text-4xl font-bold font-headline text-foreground">Home</h1>
 
-      <Card className="mb-8 overflow-hidden">
+      <Card className="mb-8">
         <CardContent className="p-4">
-          <div className="flex gap-4 overflow-x-auto pb-4">
+          <div className="grid grid-flow-col auto-cols-max gap-3 overflow-x-auto pb-2">
             {loadingStories && Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex flex-col items-center gap-2">
-                <Skeleton className="h-20 w-20 rounded-full" />
-                <Skeleton className="h-4 w-16" />
-              </div>
+              <Skeleton key={i} className="h-48 w-28 rounded-lg" />
             ))}
             {errorStories && <p className="text-destructive">{errorStories}</p>}
             {stories.map((story, index) => (
-              <div key={story.id} className="flex flex-col items-center gap-2 text-center cursor-pointer min-w-[100px]" onClick={() => openStory(index)}>
-                <div className={cn("relative h-24 w-24 rounded-full p-1", viewedStories.has(story.id) ? 'bg-muted' : 'bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500')}>
-                  <div className="bg-card p-1 rounded-full h-full w-full">
-                    <Image src={story.thumbUrl} alt={story.title} width={88} height={88} className="rounded-full object-cover h-full w-full" />
-                  </div>
-                </div>
-                <p className="w-24 truncate text-sm font-medium">{story.title}</p>
-              </div>
+               <StoryCard 
+                  key={story.id} 
+                  story={story} 
+                  isViewed={viewedStories.has(story.id)}
+                  onClick={() => openStory(index)}
+                />
             ))}
           </div>
         </CardContent>
