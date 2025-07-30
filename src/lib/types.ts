@@ -18,3 +18,12 @@ export interface Project {
   link: string;
   search: string;
 }
+
+export interface NewsItem {
+  title: string;
+  pubDate: string;
+  link: string;
+  author: string;
+  thumbnail: string;
+  description: string;
+}

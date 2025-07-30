@@ -5,10 +5,11 @@ import HomeSection from '@/app/sections/home-section';
 import ProjectsSection from '@/app/sections/projects-section';
 import ContactSection from '@/app/sections/contact-section';
 import SettingsSection from '@/app/sections/settings-section';
+import NewsSection from '@/app/sections/news-section';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import { IframeModal } from '@/components/layout/iframe-modal';
 
-type Section = 'home' | 'projects' | 'contact' | 'settings';
+type Section = 'home' | 'projects' | 'contact' | 'settings' | 'news';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>('home');
@@ -34,6 +35,8 @@ export default function Home() {
         return <HomeSection onIframeOpen={handleIframeOpen} />;
       case 'projects':
         return <ProjectsSection onIframeOpen={handleIframeOpen} />;
+      case 'news':
+        return <NewsSection onIframeOpen={handleIframeOpen} />;
       case 'contact':
         return <ContactSection />;
       case 'settings':

@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Home, Briefcase, Send, Settings, Plus, Gamepad2, Book, FileText } from 'lucide-react';
+import { Home, Briefcase, Send, Settings, Plus, Gamepad2, Newspaper, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-type Section = 'home' | 'projects' | 'contact' | 'settings';
+type Section = 'home' | 'projects' | 'contact' | 'settings' | 'news';
 
 interface BottomNavProps {
   activeSection: Section;
@@ -24,8 +24,8 @@ const settingItems = [
 
 const expandItems = [
   { url: 'https://mpgamescr.netlify.app', icon: Gamepad2, title: 'Games' },
-  { url: 'https://procr.netlify.app/edufloow', icon: Book, title: 'EduFloow' },
-  { url: 'https://procrblog.blogspot.com', icon: FileText, title: 'Blogs' },
+  { id: 'news', icon: Newspaper, title: 'News' },
+  { url: 'https://procr.netlify.app/edufloow', icon: FileText, title: 'EduFloow' },
 ];
 
 export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: BottomNavProps) {
@@ -45,11 +45,16 @@ export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: Bot
   const handleLinkClick = (e: React.MouseEvent, sectionId: Section) => {
     e.preventDefault();
     setActiveSection(sectionId);
+    setIsExpanded(false);
   };
   
-  const handleExpandLinkClick = (e: React.MouseEvent, url: string, title: string) => {
+  const handleExpandLinkClick = (e: React.MouseEvent, item: (typeof expandItems)[number]) => {
     e.preventDefault();
-    onIframeOpen(url, title);
+    if ('url' in item && item.url) {
+      onIframeOpen(item.url, item.title);
+    } else if ('id' in item && item.id) {
+       setActiveSection(item.id as Section);
+    }
     setIsExpanded(false);
   };
 
@@ -62,15 +67,15 @@ export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: Bot
         )}
       >
         <div className="flex items-center justify-center gap-4 rounded-full bg-card p-2 shadow-lg">
-          {expandItems.map(({ url, icon: Icon, title }) => (
+          {expandItems.map((item) => (
             <a
-              key={title}
-              href={url}
-              onClick={(e) => handleExpandLinkClick(e, url, title)}
+              key={item.title}
+              href={'url' in item ? item.url : `#${item.id}`}
+              onClick={(e) => handleExpandLinkClick(e, item)}
               className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary"
             >
-              <Icon className="h-6 w-6" />
-              <span className="text-xs font-semibold">{title}</span>
+              <item.icon className="h-6 w-6" />
+              <span className="text-xs font-semibold">{item.title}</span>
             </a>
           ))}
         </div>
