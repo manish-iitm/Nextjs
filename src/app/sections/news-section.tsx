@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Rss, ExternalLink } from 'lucide-react';
+import { Rss } from 'lucide-react';
 import type { NewsItem } from '@/lib/types';
 import Image from 'next/image';
+import { AnimatedLinkButton } from '@/components/animated-link-button';
 
 const RSS_URL = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnews.google.com%2Frss';
 
@@ -102,9 +102,10 @@ export default function NewsSection({ onIframeOpen }: NewsSectionProps) {
                   <div className="flex-1">
                     <p className="text-sm text-muted-foreground">{new Date(item.pubDate).toLocaleString()}</p>
                     <h3 className="mb-2 text-lg font-semibold leading-snug">{item.title}</h3>
-                    <Button onClick={() => handleReadMore(item)} size="sm">
-                       Read More <ExternalLink className="ml-2 h-4 w-4" />
-                    </Button>
+                    <AnimatedLinkButton 
+                      onClick={() => handleReadMore(item)} 
+                      thumbnail={item.thumbnail} 
+                    />
                   </div>
                 </div>
               ))}
