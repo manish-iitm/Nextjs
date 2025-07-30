@@ -66,7 +66,7 @@ export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: Bot
           isExpanded ? 'visible scale-100 opacity-100' : 'invisible scale-90 opacity-0'
         )}
       >
-        <div className="flex items-center justify-center gap-4 rounded-full bg-card p-2 shadow-lg">
+        <div className="flex items-center justify-center gap-4 rounded-full bg-nav text-nav-foreground p-2 shadow-lg">
           {expandItems.map((item) => (
             <a
               key={item.title}
@@ -80,7 +80,7 @@ export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: Bot
           ))}
         </div>
       </div>
-      <div className="flex h-16 items-center justify-between rounded-full bg-card px-6 shadow-lg">
+      <div className="flex h-16 items-center justify-between rounded-full bg-nav text-nav-foreground px-6 shadow-lg">
         {navItems.map(({ id, icon: Icon, label }) => (
           <a
             key={id}
@@ -88,7 +88,7 @@ export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: Bot
             onClick={(e) => handleLinkClick(e, id as Section)}
             className={cn(
               'transition-colors',
-              activeSection === id ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+              activeSection === id ? 'text-primary' : 'text-muted-foreground hover:text-primary'
             )}
             aria-label={label}
           >
@@ -114,7 +114,7 @@ export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: Bot
             onClick={(e) => handleLinkClick(e, id as Section)}
             className={cn(
               'transition-colors',
-              activeSection === id ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+              activeSection === id ? 'text-primary' : 'text-muted-foreground hover:text-primary'
             )}
             aria-label={label}
           >
