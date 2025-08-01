@@ -17,6 +17,7 @@ export interface Project {
   icon: string;
   link: string;
   search: string;
+  category?: string;
 }
 
 export interface NewsItem {

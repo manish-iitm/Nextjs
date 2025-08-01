@@ -10,9 +10,11 @@ import { BottomNav } from '@/components/layout/bottom-nav';
 import { IframeModal } from '@/components/layout/iframe-modal';
 
 type Section = 'home' | 'projects' | 'contact' | 'settings' | 'news';
+export type ProjectCategory = 'Alpha' | 'Beta' | 'Gamma' | null;
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>('home');
+  const [projectCategory, setProjectCategory] = useState<ProjectCategory>(null);
   const [iframeState, setIframeState] = useState<{ isOpen: boolean; url: string; title: string }>({
     isOpen: false,
     url: '',
@@ -28,13 +30,18 @@ export default function Home() {
     setIframeState({ isOpen: false, url: '', title: '' });
     document.body.style.overflow = '';
   }, []);
+  
+  const handleCategorySelect = (category: ProjectCategory) => {
+    setActiveSection('projects');
+    setProjectCategory(category);
+  }
 
   const renderSection = () => {
     switch (activeSection) {
       case 'home':
         return <HomeSection onIframeOpen={handleIframeOpen} />;
       case 'projects':
-        return <ProjectsSection onIframeOpen={handleIframeOpen} />;
+        return <ProjectsSection onIframeOpen={handleIframeOpen} category={projectCategory} />;
       case 'news':
         return <NewsSection onIframeOpen={handleIframeOpen} />;
       case 'contact':
@@ -55,7 +62,8 @@ export default function Home() {
       <BottomNav 
         activeSection={activeSection} 
         setActiveSection={setActiveSection} 
-        onIframeOpen={handleIframeOpen} 
+        onIframeOpen={handleIframeOpen}
+        onCategorySelect={handleCategorySelect} 
       />
 
       {iframeState.isOpen && (

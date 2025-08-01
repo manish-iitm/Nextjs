@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Home, Briefcase, Send, Settings, Plus, Gamepad2, FileText, Newspaper } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import type { ProjectCategory } from '@/app/page';
 
 type Section = 'home' | 'projects' | 'contact' | 'settings' | 'news';
 
@@ -10,6 +11,7 @@ interface BottomNavProps {
   activeSection: Section;
   setActiveSection: (section: Section) => void;
   onIframeOpen: (url: string, title: string) => void;
+  onCategorySelect: (category: ProjectCategory) => void;
 }
 
 const navItems = [
@@ -23,12 +25,12 @@ const settingItems = [
 ];
 
 const expandItems = [
-  { url: 'https://mpgamescr.netlify.app', icon: Gamepad2, title: 'Alpha' },
-  { url: 'https://procr.netlify.app/edufloow', icon: FileText, title: 'Beta' },
-  { id: 'news', icon: Newspaper, title: 'Gamma' },
+  { category: 'Alpha', icon: Gamepad2, title: 'Alpha' },
+  { category: 'Beta', icon: FileText, title: 'Beta' },
+  { category: 'Gamma', icon: Newspaper, title: 'Gamma' },
 ];
 
-export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: BottomNavProps) {
+export function BottomNav({ activeSection, setActiveSection, onIframeOpen, onCategorySelect }: BottomNavProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const expandRef = useRef<HTMLDivElement>(null);
 
@@ -45,16 +47,15 @@ export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: Bot
   const handleLinkClick = (e: React.MouseEvent, sectionId: Section) => {
     e.preventDefault();
     setActiveSection(sectionId);
+    if (sectionId === 'projects') {
+      onCategorySelect(null); // Reset category when clicking main projects icon
+    }
     setIsExpanded(false);
   };
   
   const handleExpandLinkClick = (e: React.MouseEvent, item: (typeof expandItems)[number]) => {
     e.preventDefault();
-    if ('url' in item && item.url) {
-      onIframeOpen(item.url, item.title);
-    } else if ('id' in item && item.id) {
-       setActiveSection(item.id as Section);
-    }
+    onCategorySelect(item.category as ProjectCategory);
     setIsExpanded(false);
   };
 
@@ -70,7 +71,7 @@ export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: Bot
           {expandItems.map((item) => (
             <a
               key={item.title}
-              href={'url' in item ? item.url : `#${item.id}`}
+              href={`#projects`}
               onClick={(e) => handleExpandLinkClick(e, item)}
               className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary"
             >

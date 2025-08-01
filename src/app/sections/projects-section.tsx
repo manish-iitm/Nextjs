@@ -6,14 +6,16 @@ import type { Project } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { ProjectCard } from '@/components/project-card';
 import { Card } from '@/components/ui/card';
+import type { ProjectCategory } from '@/app/page';
 
 interface ProjectsSectionProps {
   onIframeOpen: (url: string, title: string) => void;
+  category: ProjectCategory;
 }
 
 const PROJECTS_URL = 'https://docs.google.com/spreadsheets/d/13ZV6BXtXKp9aQCKc0OHQoLFCRrif32zvx4khFc4bR9w/export?format=csv';
 
-export default function ProjectsSection({ onIframeOpen }: ProjectsSectionProps) {
+export default function ProjectsSection({ onIframeOpen, category }: ProjectsSectionProps) {
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -30,9 +32,10 @@ export default function ProjectsSection({ onIframeOpen }: ProjectsSectionProps) 
         const projectsData: Project[] = data
           .trim()
           .split('\n')
+          .slice(1) // Skip header row
           .map(line => {
-            const [name, icon, link] = line.split(',').map(p => p.trim());
-            return { name, icon, link, search: (name || '').toLowerCase() };
+            const [name, icon, link, category] = line.split(',').map(p => p.trim());
+            return { name, icon, link, category, search: (name || '').toLowerCase() };
           })
           .filter(p => p.name && p.link);
         setAllProjects(projectsData);
@@ -47,12 +50,21 @@ export default function ProjectsSection({ onIframeOpen }: ProjectsSectionProps) 
   }, []);
 
   const filteredProjects = useMemo(() => {
-    return allProjects.filter(p => p.search.includes(searchTerm.toLowerCase()));
-  }, [allProjects, searchTerm]);
+    let projects = allProjects;
+    if (category) {
+      projects = projects.filter(p => p.category?.toLowerCase() === category.toLowerCase());
+    }
+    if (searchTerm) {
+      projects = projects.filter(p => p.search.includes(searchTerm.toLowerCase()));
+    }
+    return projects;
+  }, [allProjects, searchTerm, category]);
 
   return (
     <div className="py-8 px-4 animate-fadeIn">
-      <h1 className="mb-8 text-center text-4xl font-bold font-headline text-foreground">Projects</h1>
+      <h1 className="mb-8 text-center text-4xl font-bold font-headline text-foreground">
+        {category ? `${category} Projects` : 'All Projects'}
+      </h1>
       <Card className="p-6 md:p-8">
         <div className="relative mx-auto mb-8 max-w-lg">
           <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
@@ -83,6 +95,7 @@ export default function ProjectsSection({ onIframeOpen }: ProjectsSectionProps) 
           <div className="flex flex-col items-center justify-center gap-4 py-20 text-center text-muted-foreground">
             <Info className="h-10 w-10 text-primary" />
             <p className="text-lg font-medium">No projects match your search.</p>
+            <p className="text-sm">Try clearing the category filter or searching for something else.</p>
           </div>
         )}
       </Card>
