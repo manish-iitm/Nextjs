@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Home, Briefcase, Send, Settings, Plus, Gamepad2, FileText, Newspaper } from 'lucide-react';
+import { Home, Briefcase, Send, Settings, Plus, Beaker, Users, Rocket } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ProjectCategory } from '@/app/page';
 
@@ -25,9 +25,9 @@ const settingItems = [
 ];
 
 const expandItems = [
-  { category: 'Alpha', icon: Gamepad2, title: 'Alpha' },
-  { category: 'Beta', icon: FileText, title: 'Beta' },
-  { category: 'Gamma', icon: Newspaper, title: 'Gamma' },
+  { category: 'Alpha', icon: Beaker, title: 'Alpha' },
+  { category: 'Beta', icon: Users, title: 'Beta' },
+  { category: 'Gamma', icon: Rocket, title: 'Gamma' },
 ];
 
 export function BottomNav({ activeSection, setActiveSection, onIframeOpen, onCategorySelect }: BottomNavProps) {
