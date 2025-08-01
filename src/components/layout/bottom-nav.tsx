@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Home, Briefcase, Send, Settings, Plus, Gamepad2, Newspaper, FileText } from 'lucide-react';
+import { Home, Briefcase, Send, Settings, Plus, Gamepad2, FileText, Newspaper } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Section = 'home' | 'projects' | 'contact' | 'settings' | 'news';
