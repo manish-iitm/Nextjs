@@ -64,7 +64,7 @@ export default function ContactSection() {
                   <FormItem>
                     <FormLabel>Your Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input placeholder="Manish Patil" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
