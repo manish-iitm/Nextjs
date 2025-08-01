@@ -23,9 +23,9 @@ const settingItems = [
 ];
 
 const expandItems = [
-  { url: 'https://mpgamescr.netlify.app', icon: Gamepad2, title: 'Games' },
-  { id: 'news', icon: Newspaper, title: 'News' },
-  { url: 'https://procr.netlify.app/edufloow', icon: FileText, title: 'EduFloow' },
+  { url: 'https://mpgamescr.netlify.app', icon: Gamepad2, title: 'Alpha' },
+  { url: 'https://procr.netlify.app/edufloow', icon: FileText, title: 'Beta' },
+  { id: 'news', icon: Newspaper, title: 'Gamma' },
 ];
 
 export function BottomNav({ activeSection, setActiveSection, onIframeOpen }: BottomNavProps) {
