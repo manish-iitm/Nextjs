@@ -133,7 +133,7 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {loadingPosts && Array.from({ length: 4 }).map((_, i) => (
           <Card key={i}>
             <Skeleton className="w-full aspect-square" />
@@ -144,7 +144,7 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
         {posts.map((post, index) => (
           <Card key={index} className="overflow-hidden flex flex-col">
              <div className="relative w-full aspect-square">
-              <Image src={post.imageUrl} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 50vw, 50vw"/>
+              <Image src={post.imageUrl} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw"/>
             </div>
             <div className="p-4 text-center border-t flex flex-col flex-grow items-center justify-center">
               <h3 className="font-semibold mb-4 flex-grow">{post.title}</h3>
