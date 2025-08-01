@@ -77,7 +77,7 @@ export default function ContactSection() {
                   <FormItem>
                     <FormLabel>Your Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="john.doe@example.com" {...field} />
+                      <Input placeholder="Manish.patil@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
