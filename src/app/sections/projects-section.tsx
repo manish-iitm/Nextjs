@@ -100,7 +100,7 @@ export default function ProjectsSection({ onIframeOpen, category }: ProjectsSect
         ) : filteredProjects.length > 0 ? (
           <div id="projectGrid" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredProjects.map(project => (
-              <ProjectCard key={project.name} project={project} onOpenIframe={onOpenIframe} />
+              <ProjectCard key={project.name} project={project} onOpenIframe={onIframeOpen} />
             ))}
           </div>
         ) : (
