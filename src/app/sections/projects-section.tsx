@@ -15,6 +15,13 @@ interface ProjectsSectionProps {
 
 const PROJECTS_URL = 'https://docs.google.com/spreadsheets/d/13ZV6BXtXKp9aQCKc0OHQoLFCRrif32zvx4khFc4bR9w/export?format=csv';
 
+const categoryDescriptions: { [key in ProjectCategory & string]: string } = {
+  Alpha: 'Alpha is the upcoming and under development projects.',
+  Beta: 'Beta is the working projects, but they may have some bugs or issues.',
+  Gamma: 'Gamma is for projects that are ready to use.',
+};
+
+
 export default function ProjectsSection({ onIframeOpen, category }: ProjectsSectionProps) {
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,11 +67,16 @@ export default function ProjectsSection({ onIframeOpen, category }: ProjectsSect
     return projects;
   }, [allProjects, searchTerm, category]);
 
+  const description = category ? categoryDescriptions[category] : null;
+
   return (
     <div className="py-8 px-4 animate-fadeIn">
-      <h1 className="mb-8 text-center text-4xl font-bold font-headline text-foreground">
+      <h1 className="mb-4 text-center text-4xl font-bold font-headline text-foreground">
         {category ? `${category} Projects` : 'All Projects'}
       </h1>
+      {description && (
+        <p className="mb-8 text-center text-lg text-muted-foreground max-w-2xl mx-auto">{description}</p>
+      )}
       <Card className="p-6 md:p-8">
         <div className="relative mx-auto mb-8 max-w-lg">
           <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
@@ -88,7 +100,7 @@ export default function ProjectsSection({ onIframeOpen, category }: ProjectsSect
         ) : filteredProjects.length > 0 ? (
           <div id="projectGrid" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredProjects.map(project => (
-              <ProjectCard key={project.name} project={project} onOpenIframe={onIframeOpen} />
+              <ProjectCard key={project.name} project={project} onOpenIframe={onOpenIframe} />
             ))}
           </div>
         ) : (
