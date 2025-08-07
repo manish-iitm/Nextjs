@@ -2,6 +2,8 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: 'export',
+  basePath: '/Siv0',
   typescript: {
     ignoreBuildErrors: true,
   },
