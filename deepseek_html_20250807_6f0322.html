@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanilla Project</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="https://i.ibb.co/JwpV7g6B/code-4997543.png" type="image/jpeg">
+    <link rel="shortcut icon" href="https://i.ibb.co/JwpV7g6B/code-4997543.png" type="image/jpeg">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Apply theme immediately to prevent flash of wrong theme
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light'; 
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <main class="relative min-h-screen pb-24">
+        <div class="container" id="content">
+            <!-- Content will be injected here -->
+        </div>
+
+        <nav id="bottom-nav" class="fixed bottom-4 left-1/2 z-50 w-[90%] max-w-sm -translate-x-1/2">
+            <!-- Bottom navigation will be injected here -->
+        </nav>
+    </main>
+
+    <div id="story-viewer" class="modal-overlay hidden"></div>
+    <div id="iframe-modal" class="modal-overlay hidden"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
