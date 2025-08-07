@@ -94,7 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const expandMenu = bottomNavContainer.querySelector('.expand-menu');
     const expandButton = bottomNavContainer.querySelector('.expand-button');
 
-    const toggleExpand = () => {
+    const toggleExpand = (e) => {
+        if(e) e.stopPropagation();
         isExpanded = !isExpanded;
         expandMenu.classList.toggle('expanded', isExpanded);
         expandButton.classList.toggle('expanded', isExpanded);
@@ -543,5 +544,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
   init();
 });
-
-    

@@ -281,7 +281,7 @@ input, textarea {
 .project-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; transition: all 0.3s; background-color: var(--card); height: 100%;}
 .project-card:hover { transform: translateY(-4px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 .project-icon-container { position: relative; margin-bottom: 1rem; width: 5rem; height: 5rem; border-radius: var(--radius); background-color: var(--muted); transition: background-color 0.3s; }
-.project-card:hover .project-icon-container { background-color: var(--accent); opacity: 0.8; }
+.project-card:hover .project-icon-container { background-color: rgba(var(--primary-rgb), 0.2); }
 .project-icon-container img { padding: 0.5rem; width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s; }
 .project-card:hover img { transform: scale(1.1); }
 .project-card h3 { flex-grow: 1; font-size: 1.125rem; margin-bottom: 1rem; }
@@ -339,5 +339,3 @@ input:checked + .slider:before { transform: translateX(26px); }
 
 /* Utility */
 .pb-24 { padding-bottom: 6rem; }
-
-    
