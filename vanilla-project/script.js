@@ -121,7 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
           state.activeSection = 'projects';
         } else if(sectionId) {
           state.activeSection = sectionId;
-          state.projectCategory = null; // Reset category
+          if (sectionId === 'projects') {
+             state.projectCategory = null; // Reset category
+          }
         }
         renderContent();
         renderBottomNav();
@@ -157,6 +159,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.scrollTo(0, 0);
   };
+  
+  const createAnimatedButton = (text, url, title, thumbnail) => {
+      const button = document.createElement('button');
+      button.className = 'animated-link-button';
+      button.innerHTML = `
+        <div class="icon-container">
+            ${thumbnail ? `<img src="${thumbnail}" alt="icon" class="thumb"/>` : `<i data-lucide="link"></i>`}
+        </div>
+        <span class="text">${text}</span>
+      `;
+
+      button.addEventListener('click', () => {
+          if (button.classList.contains('toggled')) return;
+
+          button.classList.add('toggled');
+          button.querySelector('.text').textContent = 'Opening...';
+
+          setTimeout(() => {
+              openIframe(url, title);
+              button.classList.remove('toggled');
+              button.querySelector('.text').textContent = text;
+          }, 500);
+      });
+      return button;
+  }
 
   const renderHomeSection = async () => {
     renderLoading();
@@ -193,21 +220,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         </div>
-        <div id="posts-grid">
-            ${state.posts.map(post => `
-                <div class="post-card">
-                    <div class="post-card-image"><img src="${post.imageUrl}" alt="${post.title}" loading="lazy"/></div>
-                    <div class="post-card-content">
-                        <h3>${post.title}</h3>
-                        ${post.link && post.link !== '#' ? `<button class="view-post-button" data-url="${post.link}" data-title="${post.title}">View Post</button>` : ''}
-                    </div>
-                </div>
-            `).join('')}
-        </div>
+        <div id="posts-grid"></div>
     `;
 
+    const postsGrid = document.getElementById('posts-grid');
+    state.posts.forEach(post => {
+        const postCard = document.createElement('div');
+        postCard.className = 'post-card';
+        postCard.innerHTML = `
+            <div class="post-card-image"><img src="${post.imageUrl}" alt="${post.title}" loading="lazy"/></div>
+            <div class="post-card-content">
+                <h3>${post.title}</h3>
+            </div>
+        `;
+        if (post.link && post.link !== '#') {
+            const button = createAnimatedButton('View Post', post.link, post.title, post.imageUrl);
+            postCard.querySelector('.post-card-content').appendChild(button);
+        }
+        postsGrid.appendChild(postCard);
+    });
+
     contentContainer.querySelectorAll('[data-story-index]').forEach(el => el.addEventListener('click', e => openStory(parseInt(e.currentTarget.dataset.storyIndex))));
-    contentContainer.querySelectorAll('.view-post-button').forEach(el => el.addEventListener('click', e => openIframe(e.currentTarget.dataset.url, e.currentTarget.dataset.title)));
+    lucide.createIcons();
   };
 
   const renderProjectsSection = async () => {
@@ -234,27 +268,40 @@ document.addEventListener('DOMContentLoaded', () => {
             const searchMatch = !searchTerm || p.search.includes(searchTerm);
             return categoryMatch && searchMatch;
         });
-
-        document.getElementById('project-grid').innerHTML = filtered.length > 0 ? filtered.map(project => `
-            <div class="project-card">
-                <img src="${project.icon || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4bb.svg'}" alt="${project.name} icon" loading="lazy"/>
-                <h3>${project.name}</h3>
-                <button class="project-card-button" data-url="${project.link}" data-title="${project.name}">View Project</button>
-            </div>
-        `).join('') : `<p class="col-span-full text-center">No projects found.</p>`;
         
-        document.querySelectorAll('.project-card-button').forEach(el => el.addEventListener('click', e => openIframe(e.currentTarget.dataset.url, e.currentTarget.dataset.title)));
+        const grid = document.getElementById('project-grid');
+        grid.innerHTML = ''; // Clear previous projects
+
+        if (filtered.length > 0) {
+            filtered.forEach(project => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card';
+                projectCard.innerHTML = `
+                    <div class="project-icon-container">
+                      <img src="${project.icon || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4bb.svg'}" alt="${project.name} icon" loading="lazy"/>
+                    </div>
+                    <h3>${project.name}</h3>
+                `;
+                const button = createAnimatedButton('View Project', project.link, project.name, project.icon);
+                projectCard.appendChild(button);
+                grid.appendChild(projectCard);
+            });
+        } else {
+            grid.innerHTML = `<p class="no-projects-found">No projects found.</p>`;
+        }
+
+        lucide.createIcons();
     }
     
     const description = state.projectCategory ? categoryDescriptions[state.projectCategory] : '';
 
     contentContainer.innerHTML = `
         <h1 class="text-4xl font-bold text-center mb-4">${state.projectCategory ? `${state.projectCategory} Projects` : 'All Projects'}</h1>
-        ${description ? `<p class="text-lg text-center mb-8">${description}</p>` : ''}
+        ${description ? `<p class="text-lg text-center mb-8 max-w-2xl mx-auto">${description}</p>` : ''}
         <div class="card p-6">
             <div id="project-search-container">
                 <i data-lucide="search" class="icon"></i>
-                <input type="search" id="project-search-bar" placeholder="Search projects..." />
+                <input type="search" id="project-search-bar" placeholder="Search projects by name..." />
             </div>
             <div id="project-grid"></div>
         </div>
@@ -285,22 +332,28 @@ document.addEventListener('DOMContentLoaded', () => {
         <h1 class="text-4xl font-bold text-center mb-8">Latest News</h1>
         <div class="card max-w-4xl mx-auto">
             <div class="card-header"><h2 class="card-title">Google News Feed</h2></div>
-            <div class="card-content">
-                ${state.news.map(item => `
-                    <div class="news-item">
-                        ${item.thumbnail ? `<div class="news-item-thumb"><img src="${item.thumbnail}" alt="" loading="lazy"/></div>` : ''}
-                        <div class="news-item-content">
-                            <p>${new Date(item.pubDate).toLocaleString()}</p>
-                            <h3>${item.title}</h3>
-                            <button class="read-more-btn" data-url="${item.link}" data-title="${item.title}">Read More</button>
-                        </div>
-                    </div>
-                `).join('')}
+            <div id="news-list" class="card-content">
             </div>
         </div>
     `;
-    
-    contentContainer.querySelectorAll('.read-more-btn').forEach(el => el.addEventListener('click', e => openIframe(e.currentTarget.dataset.url, e.currentTarget.dataset.title)));
+
+    const newsList = document.getElementById('news-list');
+    state.news.forEach(item => {
+        const newsItem = document.createElement('div');
+        newsItem.className = 'news-item';
+        newsItem.innerHTML = `
+            ${item.thumbnail ? `<div class="news-item-thumb"><img src="${item.thumbnail}" alt="" loading="lazy"/></div>` : ''}
+            <div class="news-item-content">
+                <p>${new Date(item.pubDate).toLocaleString()}</p>
+                <h3>${item.title}</h3>
+            </div>
+        `;
+        const button = createAnimatedButton('Read More', item.link, item.title, item.thumbnail);
+        newsItem.querySelector('.news-item-content').appendChild(button);
+        newsList.appendChild(newsItem);
+    });
+
+    lucide.createIcons();
   };
 
   const renderContactSection = () => {
@@ -398,27 +451,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const story = state.stories[state.storyViewer.currentIndex];
     storyViewerContainer.innerHTML = `
-      <div class="modal-content">
-        <img src="${story.imageUrl}" alt="${story.title}" class="story-image">
+      <div class="story-viewer-content">
         <button class="close-btn"><i data-lucide="x"></i></button>
         ${state.storyViewer.currentIndex > 0 ? `<button class="story-nav-btn prev-btn"><i data-lucide="chevron-left"></i></button>` : ''}
+        <div class="story-image-container">
+            <img src="${story.imageUrl}" alt="${story.title}" class="story-image">
+        </div>
         ${state.storyViewer.currentIndex < state.stories.length - 1 ? `<button class="story-nav-btn next-btn"><i data-lucide="chevron-right"></i></button>` : ''}
         <div class="story-info">
-            <h3>${story.title}</h3>
-            ${story.link ? `<button data-url="${story.link}" data-title="${story.title}">Learn More</button>` : ''}
         </div>
       </div>
     `;
+    const storyInfo = storyViewerContainer.querySelector('.story-info');
+    const titleEl = document.createElement('h3');
+    titleEl.textContent = story.title;
+    storyInfo.appendChild(titleEl);
+
+    if (story.link) {
+      const button = createAnimatedButton('Learn More', story.link, story.title, story.thumbUrl);
+      button.addEventListener('click', closeStory);
+      storyInfo.appendChild(button);
+    }
+    
     storyViewerContainer.classList.remove('hidden');
     lucide.createIcons();
 
     storyViewerContainer.querySelector('.close-btn').addEventListener('click', closeStory);
     storyViewerContainer.querySelector('.prev-btn')?.addEventListener('click', () => changeStory(-1));
     storyViewerContainer.querySelector('.next-btn')?.addEventListener('click', () => changeStory(1));
-    storyViewerContainer.querySelector('.story-info button')?.addEventListener('click', e => {
-        closeStory();
-        openIframe(e.currentTarget.dataset.url, e.currentTarget.dataset.title);
-    });
   };
 
   const openIframe = (url, title) => {
@@ -440,13 +500,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.body.style.overflow = 'hidden';
     iframeModalContainer.innerHTML = `
-      <div class="modal-content">
+      <div class="iframe-modal-content">
         <header class="modal-header">
           <h2>${state.iframeModal.title}</h2>
           <button class="close-btn"><i data-lucide="x"></i></button>
         </header>
         <div class="modal-body">
-          <iframe src="${state.iframeModal.url}"></iframe>
+          <iframe src="${state.iframeModal.url}" title="${state.iframeModal.title}"></iframe>
         </div>
       </div>
     `;
@@ -483,3 +543,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   init();
 });
+
+    
