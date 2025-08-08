@@ -26,26 +26,27 @@ export default function Home() {
   });
   const [isAnnouncementSheetOpen, setIsAnnouncementSheetOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  useEffect(() => {
-    async function checkNewAnnouncements() {
-      try {
-        const notifications = await fetchAndParseNotifications();
-        const lastReadCount = parseInt(localStorage.getItem('lastReadCount') || '0', 10);
-        const newCount = notifications.length - lastReadCount;
-        setNotificationCount(newCount > 0 ? newCount : 0);
-      } catch (error) {
-        console.error("Failed to check for new announcements:", error);
-      }
+  const checkForNewAnnouncements = useCallback(async () => {
+    try {
+      const fetchedNotifications = await fetchAndParseNotifications();
+      setNotifications(fetchedNotifications);
+      const lastReadCount = parseInt(localStorage.getItem('lastReadNotificationCount') || '0', 10);
+      const newCount = fetchedNotifications.length - lastReadCount;
+      setNotificationCount(newCount > 0 ? newCount : 0);
+    } catch (error) {
+      console.error("Failed to check for new announcements:", error);
     }
-    checkNewAnnouncements();
   }, []);
 
+  useEffect(() => {
+    checkForNewAnnouncements();
+  }, [checkForNewAnnouncements]);
+  
   const handleNotificationsRead = () => {
-    fetchAndParseNotifications().then(notifications => {
-      localStorage.setItem('lastReadCount', notifications.length.toString());
-      setNotificationCount(0);
-    });
+    localStorage.setItem('lastReadNotificationCount', notifications.length.toString());
+    setNotificationCount(0);
   };
 
   const handleIframeOpen = useCallback((url: string, title: string) => {
@@ -86,7 +87,8 @@ export default function Home() {
       <AnnouncementSheet 
         isOpen={isAnnouncementSheetOpen} 
         onClose={() => setIsAnnouncementSheetOpen(false)} 
-        onNotificationsRead={handleNotificationsRead}
+        onOpen={handleNotificationsRead}
+        notifications={notifications}
       />
       <div className="container mx-auto">
         {renderSection()}
