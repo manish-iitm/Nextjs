@@ -5,16 +5,18 @@ import HomeSection from '@/app/sections/home-section';
 import ProjectsSection from '@/app/sections/projects-section';
 import ContactSection from '@/app/sections/contact-section';
 import SettingsSection from '@/app/sections/settings-section';
-import NewsSection from '@/app/sections/news-section';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import { IframeModal } from '@/components/layout/iframe-modal';
 import { AnnouncementSheet } from '@/components/announcement-sheet';
 import { AnnouncementIcon } from '@/components/announcement-icon';
 import { fetchAndParseNotifications } from '@/lib/utils';
-import { Notification } from '@/lib/types';
+import { Notification, NewsItem } from '@/lib/types';
+import Papa from 'papaparse';
 
-type Section = 'home' | 'projects' | 'contact' | 'settings' | 'news';
+type Section = 'home' | 'projects' | 'contact' | 'settings';
 export type ProjectCategory = 'Alpha' | 'Beta' | 'Gamma' | null;
+
+const ANNOUNCEMENTS_URL = 'https://docs.google.com/spreadsheets/d/1G0L_oKetzel-cj6nbp2Qf_elgc45YFyJS_pUR4Ytn0A/export?format=csv';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>('home');
@@ -27,29 +29,57 @@ export default function Home() {
   const [isAnnouncementSheetOpen, setIsAnnouncementSheetOpen] = useState(false);
   const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
   const [notificationCount, setNotificationCount] = useState(0);
+  const [news, setNews] = useState<NewsItem[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-
-  const checkForNewAnnouncements = useCallback(async () => {
+  
+  const fetchNews = async () => {
     setLoadingAnnouncements(true);
     try {
-      const fetchedNotifications = await fetchAndParseNotifications();
-      setNotifications(fetchedNotifications);
-      const lastReadCount = parseInt(localStorage.getItem('lastReadNotificationCount') || '0', 10);
-      const newCount = fetchedNotifications.length - lastReadCount;
-      setNotificationCount(newCount > 0 ? newCount : 0);
-    } catch (error) {
-      console.error("Failed to check for new announcements:", error);
-    } finally {
+      const res = await fetch(ANNOUNCEMENTS_URL);
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const csvText = await res.text();
+      
+      Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          if (results.errors.length) {
+            console.error('Error parsing CSV:', results.errors);
+          } else {
+            const items: NewsItem[] = (results.data as any[]).map((item: any) => ({
+              title: item.title,
+              pubDate: item.pubDate || new Date().toISOString(),
+              link: item.link,
+              author: item.author || 'Author',
+              thumbnail: item.thumbnail,
+              description: item.description,
+            })).filter(item => item.title && item.link);
+            setNews(items);
+            
+            const lastReadCount = parseInt(localStorage.getItem('lastReadNewsCount') || '0', 10);
+            const newCount = items.length - lastReadCount;
+            setNotificationCount(newCount > 0 ? newCount : 0);
+          }
+          setLoadingAnnouncements(false);
+        },
+        error: (err: any) => {
+          console.error('Error fetching or parsing news:', err);
+          setLoadingAnnouncements(false);
+        }
+      });
+
+    } catch (e: any) {
+      console.error('Error fetching news:', e);
       setLoadingAnnouncements(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    checkForNewAnnouncements();
-  }, [checkForNewAnnouncements]);
+    fetchNews();
+  }, []);
   
   const handleNotificationsRead = () => {
-    localStorage.setItem('lastReadNotificationCount', notifications.length.toString());
+    localStorage.setItem('lastReadNewsCount', news.length.toString());
     setNotificationCount(0);
   };
 
@@ -74,8 +104,6 @@ export default function Home() {
         return <HomeSection onIframeOpen={handleIframeOpen} />;
       case 'projects':
         return <ProjectsSection onIframeOpen={handleIframeOpen} category={projectCategory} />;
-      case 'news':
-        return <NewsSection onIframeOpen={handleIframeOpen} />;
       case 'contact':
         return <ContactSection />;
       case 'settings':
@@ -84,6 +112,11 @@ export default function Home() {
         return <HomeSection onIframeOpen={handleIframeOpen} />;
     }
   };
+  
+  const handleSheetOpen = () => {
+    handleNotificationsRead();
+    setIsAnnouncementSheetOpen(true);
+  }
 
   return (
     <main className="relative min-h-screen pb-24">
@@ -92,8 +125,9 @@ export default function Home() {
         isOpen={isAnnouncementSheetOpen} 
         onClose={() => setIsAnnouncementSheetOpen(false)} 
         onOpen={handleNotificationsRead}
-        notifications={notifications}
+        news={news}
         loading={loadingAnnouncements}
+        onIframeOpen={handleIframeOpen}
       />
       <div className="container mx-auto">
         {renderSection()}

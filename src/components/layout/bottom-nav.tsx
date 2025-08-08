@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Home, Briefcase, Send, Settings, Plus, Beaker, Users, Rocket } from 'lucide-react';
+import { Home, Briefcase, Send, Settings, Plus, Beaker, Users, Rocket, Rss } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ProjectCategory } from '@/app/page';
 
-type Section = 'home' | 'projects' | 'contact' | 'settings' | 'news';
+type Section = 'home' | 'projects' | 'contact' | 'settings';
 
 interface BottomNavProps {
   activeSection: Section;
@@ -30,7 +30,7 @@ const expandItems = [
   { category: 'Gamma', icon: Rocket, title: 'Gamma' },
 ];
 
-export function BottomNav({ activeSection, setActiveSection, onIframeOpen, onCategorySelect }: BottomNavProps) {
+export function BottomNav({ activeSection, setActiveSection, onCategorySelect }: BottomNavProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const expandRef = useRef<HTMLDivElement>(null);
 
