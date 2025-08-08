@@ -30,7 +30,6 @@ export default function Home() {
   const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
   const [notificationCount, setNotificationCount] = useState(0);
   const [news, setNews] = useState<NewsItem[]>([]);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   
   const fetchNews = async () => {
     setLoadingAnnouncements(true);
@@ -47,13 +46,13 @@ export default function Home() {
             console.error('Error parsing CSV:', results.errors);
           } else {
             const items: NewsItem[] = (results.data as any[]).map((item: any) => ({
-              title: item.title,
+              title: item.title || '',
               pubDate: item.pubDate || new Date().toISOString(),
-              link: item.link,
+              link: item.link || '',
               author: item.author || 'Author',
-              thumbnail: item.thumbnail,
-              description: item.description,
-            })).filter(item => item.title && item.link);
+              thumbnail: item.thumbnail || '',
+              description: item.description || '',
+            })).filter(item => item.title && item.pubDate);
             setNews(items);
             
             const lastReadCount = parseInt(localStorage.getItem('lastReadNewsCount') || '0', 10);
