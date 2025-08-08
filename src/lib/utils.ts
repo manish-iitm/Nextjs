@@ -27,7 +27,7 @@ export async function fetchAndParseNotifications(): Promise<Notification[]> {
           const notifications = results.data.map((row: any) => ({
             heading: row.heading,
             message: row.message
-          }));
+          })).filter(n => n.heading && n.message);
           resolve(notifications as Notification[]);
         }
       },
