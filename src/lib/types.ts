@@ -28,3 +28,8 @@ export interface NewsItem {
   thumbnail: string;
   description: string;
 }
+
+export interface Notification {
+  heading: string;
+  message: string;
+}
