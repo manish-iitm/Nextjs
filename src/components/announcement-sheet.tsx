@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Notification } from "@/lib/types";
 import {
   Sheet,
@@ -19,7 +19,6 @@ interface AnnouncementSheetProps {
 }
 
 export function AnnouncementSheet({ isOpen, onClose, onOpen, notifications }: AnnouncementSheetProps) {
-  const [loading, setLoading] = useState<boolean>(false);
   
   useEffect(() => {
     if (isOpen) {
@@ -28,7 +27,7 @@ export function AnnouncementSheet({ isOpen, onClose, onOpen, notifications }: An
   }, [isOpen, onOpen]);
 
   const renderContent = () => {
-    if (loading) {
+    if (!notifications) {
       return (
         <div className="space-y-4">
           <Skeleton className="h-8 w-3/4" />

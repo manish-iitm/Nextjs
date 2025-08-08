@@ -27,8 +27,10 @@ export default function Home() {
   const [isAnnouncementSheetOpen, setIsAnnouncementSheetOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [hasFetched, setHasFetched] = useState(false);
 
   const checkForNewAnnouncements = useCallback(async () => {
+    if (hasFetched) return;
     try {
       const fetchedNotifications = await fetchAndParseNotifications();
       setNotifications(fetchedNotifications);
@@ -37,8 +39,10 @@ export default function Home() {
       setNotificationCount(newCount > 0 ? newCount : 0);
     } catch (error) {
       console.error("Failed to check for new announcements:", error);
+    } finally {
+      setHasFetched(true);
     }
-  }, []);
+  }, [hasFetched]);
 
   useEffect(() => {
     checkForNewAnnouncements();
