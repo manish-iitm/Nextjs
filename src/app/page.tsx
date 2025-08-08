@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import HomeSection from '@/app/sections/home-section';
 import ProjectsSection from '@/app/sections/projects-section';
 import ContactSection from '@/app/sections/contact-section';
@@ -10,6 +10,8 @@ import { BottomNav } from '@/components/layout/bottom-nav';
 import { IframeModal } from '@/components/layout/iframe-modal';
 import { AnnouncementSheet } from '@/components/announcement-sheet';
 import { AnnouncementIcon } from '@/components/announcement-icon';
+import { fetchAndParseNotifications } from '@/lib/utils';
+import { Notification } from '@/lib/types';
 
 type Section = 'home' | 'projects' | 'contact' | 'settings' | 'news';
 export type ProjectCategory = 'Alpha' | 'Beta' | 'Gamma' | null;
@@ -23,6 +25,28 @@ export default function Home() {
     title: '',
   });
   const [isAnnouncementSheetOpen, setIsAnnouncementSheetOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  useEffect(() => {
+    async function checkNewAnnouncements() {
+      try {
+        const notifications = await fetchAndParseNotifications();
+        const lastReadCount = parseInt(localStorage.getItem('lastReadCount') || '0', 10);
+        const newCount = notifications.length - lastReadCount;
+        setNotificationCount(newCount > 0 ? newCount : 0);
+      } catch (error) {
+        console.error("Failed to check for new announcements:", error);
+      }
+    }
+    checkNewAnnouncements();
+  }, []);
+
+  const handleNotificationsRead = () => {
+    fetchAndParseNotifications().then(notifications => {
+      localStorage.setItem('lastReadCount', notifications.length.toString());
+      setNotificationCount(0);
+    });
+  };
 
   const handleIframeOpen = useCallback((url: string, title: string) => {
     setIframeState({ isOpen: true, url, title });
@@ -58,8 +82,12 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen pb-24">
-      <AnnouncementIcon onOpen={() => setIsAnnouncementSheetOpen(true)} />
-      <AnnouncementSheet isOpen={isAnnouncementSheetOpen} onClose={() => setIsAnnouncementSheetOpen(false)} />
+      <AnnouncementIcon onOpen={() => setIsAnnouncementSheetOpen(true)} notificationCount={notificationCount} />
+      <AnnouncementSheet 
+        isOpen={isAnnouncementSheetOpen} 
+        onClose={() => setIsAnnouncementSheetOpen(false)} 
+        onNotificationsRead={handleNotificationsRead}
+      />
       <div className="container mx-auto">
         {renderSection()}
       </div>
