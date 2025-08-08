@@ -9,7 +9,6 @@ import { BottomNav } from '@/components/layout/bottom-nav';
 import { IframeModal } from '@/components/layout/iframe-modal';
 import { AnnouncementSheet } from '@/components/announcement-sheet';
 import { AnnouncementIcon } from '@/components/announcement-icon';
-import { fetchAndParseNotifications } from '@/lib/utils';
 import { Notification, NewsItem } from '@/lib/types';
 import Papa from 'papaparse';
 
@@ -27,12 +26,10 @@ export default function Home() {
     title: '',
   });
   const [isAnnouncementSheetOpen, setIsAnnouncementSheetOpen] = useState(false);
-  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
   const [notificationCount, setNotificationCount] = useState(0);
   const [news, setNews] = useState<NewsItem[]>([]);
-  
-  const fetchNews = async () => {
-    setLoadingAnnouncements(true);
+
+  const fetchNews = useCallback(async () => {
     try {
       const res = await fetch(ANNOUNCEMENTS_URL);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -60,23 +57,19 @@ export default function Home() {
             const newCount = items.length - lastReadCount;
             setNotificationCount(newCount > 0 ? newCount : 0);
           }
-          setLoadingAnnouncements(false);
         },
         error: (err: any) => {
           console.error('Error fetching or parsing news:', err);
-          setLoadingAnnouncements(false);
         }
       });
-
     } catch (e: any) {
       console.error('Error fetching news:', e);
-      setLoadingAnnouncements(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchNews();
-  }, []);
+  }, [fetchNews]);
   
   const handleNotificationsRead = () => {
     localStorage.setItem('lastReadNewsCount', news.length.toString());
@@ -124,9 +117,6 @@ export default function Home() {
       <AnnouncementSheet 
         isOpen={isAnnouncementSheetOpen} 
         onClose={() => setIsAnnouncementSheetOpen(false)} 
-        onOpen={handleNotificationsRead}
-        news={news}
-        loading={loadingAnnouncements}
         onIframeOpen={handleIframeOpen}
       />
       <div className="container mx-auto">
