@@ -41,13 +41,14 @@ export default function Home() {
       Papa.parse(csvText, {
         header: true,
         skipEmptyLines: true,
+        transformHeader: header => header.toLowerCase().trim(),
         complete: (results) => {
           if (results.errors.length) {
             console.error('Error parsing CSV:', results.errors);
           } else {
             const items: NewsItem[] = (results.data as any[]).map((item: any) => ({
               title: item.title || '',
-              pubDate: item.pubDate || new Date().toISOString(),
+              pubDate: item.pubdate || new Date().toISOString(),
               link: item.link || '',
               author: item.author || 'Author',
               thumbnail: item.thumbnail || '',
