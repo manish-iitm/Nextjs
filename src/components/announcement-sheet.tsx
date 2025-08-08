@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import Image from 'next/image';
 import { NewsItem } from "@/lib/types";
 import {
   Sheet,
@@ -11,8 +10,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AnimatedLinkButton } from '@/components/animated-link-button';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 interface AnnouncementSheetProps {
   isOpen: boolean;
@@ -31,27 +29,15 @@ export function AnnouncementSheet({ isOpen, onClose, onOpen, news, loading, onIf
     }
   }, [isOpen, onOpen]);
   
-  const handleReadMore = (item: NewsItem) => {
-    onClose(); // Close the sheet before opening iframe
-    if(item.link && item.link !== '#') {
-        onIframeOpen(item.link, item.title);
-    }
-  }
-
   const renderContent = () => {
     if (loading) {
       return (
-        <div className="space-y-4">
-          {Array.from({ length: 3 }).map((_, i) => (
-             <Card key={i}>
-                <CardHeader>
-                    <Skeleton className="h-6 w-3/4" />
-                </CardHeader>
-                <CardContent>
-                    <Skeleton className="h-4 w-full mb-2" />
-                    <Skeleton className="h-4 w-5/6" />
-                </CardContent>
-             </Card>
+        <div className="space-y-4 pt-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="h-5 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
           ))}
         </div>
       );
@@ -62,23 +48,15 @@ export function AnnouncementSheet({ isOpen, onClose, onOpen, news, loading, onIf
     }
 
     return (
-       <div className="space-y-4">
+       <div className="space-y-4 pt-4">
         {news.map((item, index) => (
-          <Card key={index}>
-            <CardHeader>
-              <CardTitle className="text-lg font-bold">{item.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">{item.description}</p>
-              {item.link && item.link !== '#' && (
-                <AnimatedLinkButton 
-                  onClick={() => handleReadMore(item)} 
-                  thumbnail={item.thumbnail || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e2.svg'}
-                  text="Read More"
-                />
-              )}
-            </CardContent>
-          </Card>
+          <div key={index}>
+            <div className="mb-4">
+                <p className="font-bold text-foreground mb-1">{item.title}</p>
+                <p className="text-sm text-muted-foreground">{new Date(item.pubDate).toLocaleString()}</p>
+            </div>
+            {index < news.length - 1 && <Separator />}
+          </div>
         ))}
       </div>
     );
@@ -88,12 +66,9 @@ export function AnnouncementSheet({ isOpen, onClose, onOpen, news, loading, onIf
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Announcements</SheetTitle>
-          <SheetDescription>
-            Here are the latest announcements.
-          </SheetDescription>
+          <SheetTitle className="text-2xl font-bold pb-2 border-b">Announcements</SheetTitle>
         </SheetHeader>
-        <div className="mt-8">
+        <div className="mt-4">
           {renderContent()}
         </div>
       </SheetContent>
