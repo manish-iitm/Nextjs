@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import HomeSection from '@/app/sections/home-section';
 import ProjectsSection from '@/app/sections/projects-section';
 import ContactSection from '@/app/sections/contact-section';
@@ -8,7 +8,8 @@ import SettingsSection from '@/app/sections/settings-section';
 import NewsSection from '@/app/sections/news-section';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import { IframeModal } from '@/components/layout/iframe-modal';
-import { NotificationPopup } from '@/components/notification-popup';
+import { AnnouncementSheet } from '@/components/announcement-sheet';
+import { AnnouncementIcon } from '@/components/announcement-icon';
 
 type Section = 'home' | 'projects' | 'contact' | 'settings' | 'news';
 export type ProjectCategory = 'Alpha' | 'Beta' | 'Gamma' | null;
@@ -21,6 +22,7 @@ export default function Home() {
     url: '',
     title: '',
   });
+  const [isAnnouncementSheetOpen, setIsAnnouncementSheetOpen] = useState(false);
 
   const handleIframeOpen = useCallback((url: string, title: string) => {
     setIframeState({ isOpen: true, url, title });
@@ -56,11 +58,11 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen pb-24">
+      <AnnouncementIcon onOpen={() => setIsAnnouncementSheetOpen(true)} />
+      <AnnouncementSheet isOpen={isAnnouncementSheetOpen} onClose={() => setIsAnnouncementSheetOpen(false)} />
       <div className="container mx-auto">
         {renderSection()}
       </div>
-
-      <NotificationPopup />
 
       <BottomNav 
         activeSection={activeSection} 
