@@ -7,8 +7,9 @@ import { Rss } from 'lucide-react';
 import type { NewsItem } from '@/lib/types';
 import Image from 'next/image';
 import { AnimatedLinkButton } from '@/components/animated-link-button';
+import Papa from 'papaparse';
 
-const RSS_URL = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnews.google.com%2Frss';
+const ANNOUNCEMENTS_URL = 'https://docs.google.com/spreadsheets/d/1G0L_oKetzel-cj6nbp2Qf_elgc45YFyJS_pUR4Ytn0A/export?format=csv';
 
 interface NewsSectionProps {
   onIframeOpen: (url: string, title: string) => void;
@@ -24,24 +25,40 @@ export default function NewsSection({ onIframeOpen }: NewsSectionProps) {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(RSS_URL);
+        const res = await fetch(ANNOUNCEMENTS_URL);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        const data = await res.json();
-        if (data.status !== 'ok') throw new Error('Failed to fetch RSS feed.');
+        const csvText = await res.text();
         
-        const items: NewsItem[] = data.items.map((item: any) => ({
-          title: item.title,
-          pubDate: item.pubDate,
-          link: item.link,
-          author: item.author,
-          thumbnail: item.thumbnail,
-          description: item.description,
-        }));
-        setNews(items);
+        Papa.parse(csvText, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            if (results.errors.length) {
+              console.error('Error parsing CSV:', results.errors);
+              setError('Failed to parse announcements data.');
+            } else {
+              const items: NewsItem[] = (results.data as any[]).map((item: any) => ({
+                title: item.title,
+                pubDate: item.pubDate || new Date().toISOString(),
+                link: item.link,
+                author: item.author || 'Author',
+                thumbnail: item.thumbnail,
+                description: item.description,
+              })).filter(item => item.title && item.link);
+              setNews(items);
+            }
+            setLoading(false);
+          },
+          error: (err: any) => {
+            console.error('Error fetching or parsing news:', err);
+            setError('Failed to load news feed. Please try again later.');
+            setLoading(false);
+          }
+        });
+
       } catch (e: any) {
         console.error('Error fetching news:', e);
         setError('Failed to load news feed. Please try again later.');
-      } finally {
         setLoading(false);
       }
     };
@@ -62,8 +79,8 @@ export default function NewsSection({ onIframeOpen }: NewsSectionProps) {
           <div className="flex items-center gap-3">
             <Rss className="h-6 w-6 text-primary" />
             <div>
-              <CardTitle className="text-2xl">Google News Feed</CardTitle>
-              <CardDescription>Top stories right now</CardDescription>
+              <CardTitle className="text-2xl">Announcements</CardTitle>
+              <CardDescription>Latest updates and news</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -104,7 +121,7 @@ export default function NewsSection({ onIframeOpen }: NewsSectionProps) {
                     <h3 className="mb-2 text-lg font-semibold leading-snug">{item.title}</h3>
                     <AnimatedLinkButton 
                       onClick={() => handleReadMore(item)} 
-                      thumbnail={item.thumbnail}
+                      thumbnail={item.thumbnail || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e2.svg'}
                       text="Read More"
                     />
                   </div>
