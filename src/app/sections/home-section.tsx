@@ -32,7 +32,7 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
   }>({ isOpen: false, currentIndex: 0 });
 
   useEffect(() => {
-    const storedViewed = new Set(JSON.parse(localStorage.getItem('viewedStories') || '[]'));
+    const storedViewed = new Set<string>(JSON.parse(localStorage.getItem('viewedStories') || '[]'));
     setViewedStories(storedViewed);
 
     const fetchStories = async () => {
