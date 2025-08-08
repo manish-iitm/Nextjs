@@ -16,9 +16,10 @@ interface AnnouncementSheetProps {
   onClose: () => void;
   onOpen: () => void;
   notifications: Notification[];
+  loading: boolean;
 }
 
-export function AnnouncementSheet({ isOpen, onClose, onOpen, notifications }: AnnouncementSheetProps) {
+export function AnnouncementSheet({ isOpen, onClose, onOpen, notifications, loading }: AnnouncementSheetProps) {
   
   useEffect(() => {
     if (isOpen) {
@@ -27,7 +28,7 @@ export function AnnouncementSheet({ isOpen, onClose, onOpen, notifications }: An
   }, [isOpen, onOpen]);
 
   const renderContent = () => {
-    if (!notifications) {
+    if (loading) {
       return (
         <div className="space-y-4">
           <Skeleton className="h-8 w-3/4" />
@@ -38,7 +39,7 @@ export function AnnouncementSheet({ isOpen, onClose, onOpen, notifications }: An
     }
 
     if (notifications.length === 0) {
-      return <p>No announcements found.</p>;
+      return <p>No new announcements.</p>;
     }
 
     return [...notifications].reverse().map((notification, index) => (

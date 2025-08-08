@@ -25,12 +25,12 @@ export default function Home() {
     title: '',
   });
   const [isAnnouncementSheetOpen, setIsAnnouncementSheetOpen] = useState(false);
+  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
   const [notificationCount, setNotificationCount] = useState(0);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [hasFetched, setHasFetched] = useState(false);
 
   const checkForNewAnnouncements = useCallback(async () => {
-    if (hasFetched) return;
+    setLoadingAnnouncements(true);
     try {
       const fetchedNotifications = await fetchAndParseNotifications();
       setNotifications(fetchedNotifications);
@@ -40,9 +40,9 @@ export default function Home() {
     } catch (error) {
       console.error("Failed to check for new announcements:", error);
     } finally {
-      setHasFetched(true);
+      setLoadingAnnouncements(false);
     }
-  }, [hasFetched]);
+  }, []);
 
   useEffect(() => {
     checkForNewAnnouncements();
@@ -93,6 +93,7 @@ export default function Home() {
         onClose={() => setIsAnnouncementSheetOpen(false)} 
         onOpen={handleNotificationsRead}
         notifications={notifications}
+        loading={loadingAnnouncements}
       />
       <div className="container mx-auto">
         {renderSection()}
