@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import HomeSection from '@/app/sections/home-section';
 import ProjectsSection from '@/app/sections/projects-section';
 import ContactSection from '@/app/sections/contact-section';
@@ -8,6 +8,7 @@ import SettingsSection from '@/app/sections/settings-section';
 import NewsSection from '@/app/sections/news-section';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import { IframeModal } from '@/components/layout/iframe-modal';
+import { NotificationPopup } from '@/components/notification-popup';
 
 type Section = 'home' | 'projects' | 'contact' | 'settings' | 'news';
 export type ProjectCategory = 'Alpha' | 'Beta' | 'Gamma' | null;
@@ -58,6 +59,8 @@ export default function Home() {
       <div className="container mx-auto">
         {renderSection()}
       </div>
+
+      <NotificationPopup />
 
       <BottomNav 
         activeSection={activeSection} 
