@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedLinkButton } from '@/components/animated-link-button';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface AnnouncementSheetProps {
   isOpen: boolean;
@@ -32,22 +33,25 @@ export function AnnouncementSheet({ isOpen, onClose, onOpen, news, loading, onIf
   
   const handleReadMore = (item: NewsItem) => {
     onClose(); // Close the sheet before opening iframe
-    onIframeOpen(item.link, item.title);
+    if(item.link && item.link !== '#') {
+        onIframeOpen(item.link, item.title);
+    }
   }
 
   const renderContent = () => {
     if (loading) {
       return (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
-             <div key={i} className="flex gap-4">
-              <Skeleton className="h-24 w-24 rounded-lg" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-10 w-32" />
-              </div>
-            </div>
+             <Card key={i}>
+                <CardHeader>
+                    <Skeleton className="h-6 w-3/4" />
+                </CardHeader>
+                <CardContent>
+                    <Skeleton className="h-4 w-full mb-2" />
+                    <Skeleton className="h-4 w-5/6" />
+                </CardContent>
+             </Card>
           ))}
         </div>
       );
@@ -58,30 +62,23 @@ export function AnnouncementSheet({ isOpen, onClose, onOpen, news, loading, onIf
     }
 
     return (
-       <div className="space-y-6">
+       <div className="space-y-4">
         {news.map((item, index) => (
-          <div key={index} className="flex flex-col sm:flex-row gap-4 items-start border-b pb-6 last:border-b-0 last:pb-0">
-            {item.thumbnail && (
-                <div className="w-full sm:w-32 h-32 flex-shrink-0 relative rounded-lg overflow-hidden">
-                <Image
-                  src={item.thumbnail}
-                  alt={`Thumbnail for ${item.title}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 100vw, 128px"
+          <Card key={index}>
+            <CardHeader>
+              <CardTitle className="text-lg font-bold">{item.title}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">{item.description}</p>
+              {item.link && item.link !== '#' && (
+                <AnimatedLinkButton 
+                  onClick={() => handleReadMore(item)} 
+                  thumbnail={item.thumbnail || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e2.svg'}
+                  text="Read More"
                 />
-              </div>
-            )}
-            <div className="flex-1">
-              <p className="text-sm text-muted-foreground">{new Date(item.pubDate).toLocaleString()}</p>
-              <h3 className="mb-2 text-lg font-semibold leading-snug">{item.title}</h3>
-              <AnimatedLinkButton 
-                onClick={() => handleReadMore(item)} 
-                thumbnail={item.thumbnail || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e2.svg'}
-                text="Read More"
-              />
-            </div>
-          </div>
+              )}
+            </CardContent>
+          </Card>
         ))}
       </div>
     );
