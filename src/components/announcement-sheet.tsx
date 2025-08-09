@@ -7,6 +7,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
@@ -23,31 +24,27 @@ const parseCSV = (csvData: string): NewsItem[] => {
     const lines = csvData.split('\n');
     const items: NewsItem[] = [];
 
-    const header = lines[0].split(',').map(h => h.trim().toLowerCase());
-    const titleIndex = header.indexOf('title');
-    const pubDateIndex = header.indexOf('pubdate');
-    
-    if (titleIndex === -1 || pubDateIndex === -1) {
-        console.error("CSV must contain 'title' and 'pubdate' headers.");
-        return [];
-    }
-
+    // Skip header row
     for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (line) {
-            const parts = line.split(',');
-            items.push({
-                title: parts[titleIndex]?.replace(/"/g, '').trim() || 'No Title',
-                pubDate: parts[pubDateIndex]?.replace(/"/g, '').trim() || new Date().toISOString(),
-                link: '',
-                author: '',
-                thumbnail: '',
-                description: '',
-            });
+            const parts = line.split(',').map(part => part.replace(/"/g, '').trim());
+            // Expecting Title in the first column (index 0) and PubDate in the second (index 1)
+            if (parts.length >= 2) {
+                 items.push({
+                    title: parts[0] || 'No Title',
+                    pubDate: parts[1] || new Date().toISOString(),
+                    link: parts[2] || '',
+                    author: parts[3] || 'Author',
+                    thumbnail: parts[4] || '',
+                    description: parts[5] || '',
+                });
+            }
         }
     }
-    return items;
+    return items.filter(item => item.title && item.title !== 'No Title');
 };
+
 
 export function AnnouncementSheet({ isOpen, onClose }: AnnouncementSheetProps) {
   const [news, setNews] = useState<NewsItem[]>([]);
