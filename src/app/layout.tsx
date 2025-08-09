@@ -4,7 +4,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Netly',
+  title: 'FlowDash',
   description: 'A personal portfolio and project showcase.',
   icons: {
     icon: 'https://i.ibb.co/JwpV7g6B/code-4997543.png',
