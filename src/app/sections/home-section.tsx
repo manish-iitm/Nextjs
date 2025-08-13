@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { StoryViewer } from '@/components/story-viewer';
 import type { Story, InstagramPost } from '@/lib/types';
 import { StoryCard } from '@/components/story-card';
-import { AnimatedLinkButton } from '@/components/animated-link-button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -135,27 +135,20 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {loadingPosts && Array.from({ length: 4 }).map((_, i) => (
-          <Card key={i}>
-            <Skeleton className="w-full aspect-square" />
-            <div className="p-4"><Skeleton className="h-6 w-3/4" /></div>
+          <Card key={i} className="p-4">
+            <Skeleton className="h-8 w-3/4 mb-4" />
+            <Skeleton className="h-10 w-32" />
           </Card>
         ))}
         {errorPosts && <p className="text-destructive text-center col-span-2">{errorPosts}</p>}
         {posts.map((post, index) => (
-          <Card key={index} className="overflow-hidden flex flex-col">
-             <div className="relative w-full aspect-square">
-              <Image src={post.imageUrl} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw"/>
-            </div>
-            <div className="p-4 text-center border-t flex flex-col flex-grow items-center justify-center">
-              <h3 className="font-semibold mb-4 flex-grow">{post.title}</h3>
-              {post.link && post.link !== '#' && (
-                 <AnimatedLinkButton
-                    onClick={() => handlePostClick(post)}
-                    thumbnail={post.imageUrl}
-                    text="View Post"
-                />
-              )}
-            </div>
+          <Card key={index} className="overflow-hidden flex flex-col justify-center p-6">
+            <h3 className="font-semibold text-lg mb-4 text-center">{post.title}</h3>
+            {post.link && post.link !== '#' && (
+              <Button onClick={() => handlePostClick(post)} className="w-full">
+                View
+              </Button>
+            )}
           </Card>
         ))}
       </div>
