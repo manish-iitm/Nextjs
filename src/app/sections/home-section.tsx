@@ -7,6 +7,7 @@ import { StoryViewer } from '@/components/story-viewer';
 import type { Story, InstagramPost } from '@/lib/types';
 import { StoryCard } from '@/components/story-card';
 import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -136,17 +137,20 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {loadingPosts && Array.from({ length: 4 }).map((_, i) => (
           <Card key={i} className="p-4">
-            <Skeleton className="h-8 w-3/4 mb-4" />
-            <Skeleton className="h-10 w-32" />
+            <Skeleton className="h-12 w-full" />
           </Card>
         ))}
         {errorPosts && <p className="text-destructive text-center col-span-2">{errorPosts}</p>}
         {posts.map((post, index) => (
-          <Card key={index} className="overflow-hidden flex flex-col justify-center p-6">
-            <h3 className="font-semibold text-lg mb-4 text-center">{post.title}</h3>
+          <Card key={index} className="overflow-hidden flex flex-col justify-center p-6 bg-card/50 hover:bg-card transition-colors duration-300">
             {post.link && post.link !== '#' && (
-              <Button onClick={() => handlePostClick(post)} className="w-full">
-                View
+              <Button 
+                onClick={() => handlePostClick(post)} 
+                className="w-full h-14 text-lg font-semibold group"
+                variant="ghost"
+              >
+                {post.title}
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             )}
           </Card>
