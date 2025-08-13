@@ -142,16 +142,27 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
         ))}
         {errorPosts && <p className="text-destructive text-center col-span-2">{errorPosts}</p>}
         {posts.map((post, index) => (
-          <Card key={index} className="overflow-hidden flex flex-col justify-center p-6 bg-card/50 hover:bg-card transition-colors duration-300">
+          <Card key={index} className="overflow-hidden bg-card/50 hover:bg-card transition-colors duration-300">
             {post.link && post.link !== '#' && (
-              <Button 
-                onClick={() => handlePostClick(post)} 
-                className="w-full h-14 text-lg font-semibold group"
-                variant="ghost"
-              >
-                {post.title}
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-              </Button>
+              <div className="flex items-center p-4">
+                 <div className="relative h-16 w-16 mr-4 rounded-lg bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                    <Image
+                        src={post.imageUrl}
+                        alt={`${post.title} icon`}
+                        fill
+                        className="p-1 object-contain"
+                        sizes="64px"
+                    />
+                </div>
+                <Button 
+                  onClick={() => handlePostClick(post)} 
+                  className="w-full h-14 text-lg font-semibold group justify-between"
+                  variant="ghost"
+                >
+                  <span className="truncate">{post.title}</span>
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 flex-shrink-0" />
+                </Button>
+              </div>
             )}
           </Card>
         ))}
