@@ -107,7 +107,7 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
   
   const handlePostClick = (post: InstagramPost) => {
     if (post.link && post.link !== '#') {
-      onIframeOpen(post.link, post.title)
+      window.open(post.link, '_self');
     }
   }
 
