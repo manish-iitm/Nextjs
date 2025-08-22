@@ -62,3 +62,10 @@ export interface Course {
     testLink: string;
     category: string;
 }
+
+export interface Article {
+    title: string;
+    thumbnail: string;
+    link: string;
+    category: string;
+}
