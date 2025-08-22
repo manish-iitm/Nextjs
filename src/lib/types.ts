@@ -33,3 +33,10 @@ export interface Notification {
   heading: string;
   message: string;
 }
+
+export interface Deal {
+  name: string;
+  thumbnail: string;
+  link: string;
+  category: string;
+}

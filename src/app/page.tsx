@@ -5,6 +5,7 @@ import HomeSection from '@/app/sections/home-section';
 import ProjectsSection from '@/app/sections/projects-section';
 import ContactSection from '@/app/sections/contact-section';
 import SettingsSection from '@/app/sections/settings-section';
+import DealsSection from '@/app/sections/deals-section';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import { IframeModal } from '@/components/layout/iframe-modal';
 import { AnnouncementSheet } from '@/components/announcement-sheet';
@@ -12,7 +13,7 @@ import { AnnouncementIcon } from '@/components/announcement-icon';
 import { Notification, NewsItem } from '@/lib/types';
 import Papa from 'papaparse';
 
-type Section = 'home' | 'projects' | 'contact' | 'settings';
+type Section = 'home' | 'projects' | 'contact' | 'settings' | 'deals' | 'games' | 'media' | 'courses' | 'article';
 export type ProjectCategory = 'Alpha' | 'Beta' | 'Gamma' | null;
 
 const ANNOUNCEMENTS_URL = 'https://docs.google.com/spreadsheets/d/1G0L_oKetzel-cj6nbp2Qf_elgc45YFyJS_pUR4Ytn0A/export?format=csv';
@@ -97,6 +98,8 @@ export default function Home() {
         return <HomeSection onIframeOpen={handleIframeOpen} />;
       case 'projects':
         return <ProjectsSection onIframeOpen={handleIframeOpen} initialCategory={projectCategory} />;
+      case 'deals':
+        return <DealsSection onIframeOpen={handleIframeOpen} />;
       case 'contact':
         return <ContactSection />;
       case 'settings':
