@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Home, Briefcase, Send, Settings, Plus, Beaker, Users, Rocket, Rss } from 'lucide-react';
+import { Home, Briefcase, Send, Settings, Plus, Tag, Gamepad2, PlaySquare, Book, Newspaper } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ProjectCategory } from '@/app/page';
 
-type Section = 'home' | 'projects' | 'contact' | 'settings';
+type Section = 'home' | 'projects' | 'contact' | 'settings' | 'deals' | 'games' | 'media' | 'courses' | 'article';
 
 interface BottomNavProps {
   activeSection: Section;
@@ -25,12 +25,14 @@ const settingItems = [
 ];
 
 const expandItems = [
-  { category: 'Alpha', icon: Beaker, title: 'Alpha' },
-  { category: 'Beta', icon: Users, title: 'Beta' },
-  { category: 'Gamma', icon: Rocket, title: 'Gamma' },
+  { id: 'deals', icon: Tag, title: 'Deals' },
+  { id: 'games', icon: Gamepad2, title: 'Games' },
+  { id: 'media', icon: PlaySquare, title: 'Media' },
+  { id: 'courses', icon: Book, title: 'Courses' },
+  { id: 'article', icon: Newspaper, title: 'Article' },
 ];
 
-export function BottomNav({ activeSection, setActiveSection, onCategorySelect }: BottomNavProps) {
+export function BottomNav({ activeSection, setActiveSection, onCategorySelect, onIframeOpen }: BottomNavProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const expandRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +57,15 @@ export function BottomNav({ activeSection, setActiveSection, onCategorySelect }:
   
   const handleExpandLinkClick = (e: React.MouseEvent, item: (typeof expandItems)[number]) => {
     e.preventDefault();
-    onCategorySelect(item.category as ProjectCategory);
+    // This needs to be adjusted. The new items are not project categories.
+    // I will assume they should set the active section for now.
+    // The user said "I will give you code one by one", so maybe they will clarify.
+    // For now, let's make them navigate to a new section.
+    // This will require changing the `page.tsx` to handle these new sections.
+    // The prompt only mentions changing this file. Let's see what happens.
+    // The user said "add Deals,games,media,courses and article only button"
+    // I will assume clicking these buttons sets the active section.
+    setActiveSection(item.id as Section);
     setIsExpanded(false);
   };
 
@@ -71,7 +81,7 @@ export function BottomNav({ activeSection, setActiveSection, onCategorySelect }:
           {expandItems.map((item) => (
             <a
               key={item.title}
-              href={`#projects`}
+              href={`#${item.id}`}
               onClick={(e) => handleExpandLinkClick(e, item)}
               className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary"
             >
