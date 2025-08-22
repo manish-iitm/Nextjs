@@ -6,6 +6,7 @@ import ProjectsSection from '@/app/sections/projects-section';
 import ContactSection from '@/app/sections/contact-section';
 import SettingsSection from '@/app/sections/settings-section';
 import DealsSection from '@/app/sections/deals-section';
+import GamesSection from '@/app/sections/games-section';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import { IframeModal } from '@/components/layout/iframe-modal';
 import { AnnouncementSheet } from '@/components/announcement-sheet';
@@ -100,6 +101,8 @@ export default function Home() {
         return <ProjectsSection onIframeOpen={handleIframeOpen} initialCategory={projectCategory} />;
       case 'deals':
         return <DealsSection onIframeOpen={handleIframeOpen} />;
+      case 'games':
+        return <GamesSection onIframeOpen={handleIframeOpen} />;
       case 'contact':
         return <ContactSection />;
       case 'settings':

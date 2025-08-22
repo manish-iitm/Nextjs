@@ -40,3 +40,10 @@ export interface Deal {
   link: string;
   category: string;
 }
+
+export interface Game {
+    title: string;
+    thumbnail: string;
+    link: string;
+    category: string;
+}
