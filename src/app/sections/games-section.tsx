@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, ReactNode } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Game } from '@/lib/types';
-import { AlertCircle, Gamepad2, Search } from 'lucide-react';
+import { AlertCircle, Gamepad2, Search, PlayCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface GamesSectionProps {
@@ -44,6 +44,11 @@ const parseCSV = (csv: string): Game[] => {
         }
     }
     return result;
+};
+
+const getPlatformInfo = (link: string): { icon: ReactNode, text: string } => {
+    // This can be expanded with more specific game platforms
+    return { icon: <Gamepad2 />, text: 'Play Game' };
 };
 
 
@@ -157,7 +162,9 @@ export default function GamesSection({ onIframeOpen }: GamesSectionProps) {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredGames.map((game, index) => (
+                    {filteredGames.map((game, index) => {
+                        const platform = getPlatformInfo(game.link);
+                        return (
                         <Card key={index} className="flex flex-col overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg">
                             <CardHeader className="p-0">
                                 <div className="relative aspect-video w-full">
@@ -169,6 +176,9 @@ export default function GamesSection({ onIframeOpen }: GamesSectionProps) {
                                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                         data-ai-hint="game"
                                     />
+                                    <div className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white">
+                                        {platform.icon}
+                                    </div>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-4 flex-grow">
@@ -177,11 +187,13 @@ export default function GamesSection({ onIframeOpen }: GamesSectionProps) {
                             </CardContent>
                             <CardFooter className="p-0">
                                 <Button onClick={() => handleGameClick(game)} className="w-full rounded-t-none" variant="default">
-                                    Play Game
+                                    {platform.icon}
+                                    <span>{platform.text}</span>
                                 </Button>
                             </CardFooter>
                         </Card>
-                    ))}
+                        )
+                    })}
                 </div>
             )}
         </div>
