@@ -3,39 +3,45 @@
 import React from 'react';
 import Image from 'next/image';
 import type { Project } from '@/lib/types';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { AnimatedLinkButton } from './animated-link-button';
+import { Button } from './ui/button';
+import { Briefcase } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
   onOpenIframe: (url: string, title: string) => void;
 }
 
-const DEFAULT_ICON = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4bb.svg';
-
 export function ProjectCard({ project, onOpenIframe }: ProjectCardProps) {
   return (
-    <Card
-      className="group flex h-full flex-col items-center overflow-hidden text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-      tabIndex={0}
-    >
-      <CardContent className="flex flex-col items-center justify-between p-4 w-full h-full">
-        <div className="relative mb-4 h-20 w-20 rounded-lg bg-gray-100 dark:bg-gray-800 transition-colors duration-300 group-hover:bg-primary/20">
+    <Card className="flex flex-col overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg">
+      <CardHeader className="p-0">
+        <div className="relative aspect-video w-full">
           <Image
-            src={project.icon || DEFAULT_ICON}
-            alt={`${project.name} icon`}
+            src={project.icon || 'https://placehold.co/600x400'}
+            alt={project.name}
             fill
-            className="p-2 object-contain transition-transform duration-300 group-hover:scale-110"
-            sizes="80px"
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            data-ai-hint="project concept"
           />
+          <div className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white">
+            <Briefcase />
+          </div>
         </div>
-        <h3 className="flex-grow text-lg font-semibold text-foreground font-headline mb-4">{project.name}</h3>
-        <AnimatedLinkButton
-          onClick={() => onOpenIframe(project.link, project.name)}
-          thumbnail={project.icon || DEFAULT_ICON}
-          text="View Project"
-        />
+      </CardHeader>
+      <CardContent className="p-4 flex-grow">
+        <CardTitle className="text-lg leading-snug mb-2">{project.name}</CardTitle>
+        <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-secondary text-secondary-foreground">
+          {project.category}
+        </span>
       </CardContent>
+      <CardFooter className="p-0">
+        <Button onClick={() => onOpenIframe(project.link, project.name)} className="w-full rounded-t-none" variant="default">
+          View Project
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

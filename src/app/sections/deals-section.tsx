@@ -169,6 +169,9 @@ export default function DealsSection({ onIframeOpen }: DealsSectionProps) {
                                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                         data-ai-hint="deal offer"
                                     />
+                                    <div className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white">
+                                        <Tag />
+                                    </div>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-4 flex-grow">

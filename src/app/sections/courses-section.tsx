@@ -176,6 +176,9 @@ export default function CoursesSection({ onIframeOpen }: CoursesSectionProps) {
                                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                         data-ai-hint="course material"
                                     />
+                                    <div className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white">
+                                        <GraduationCap />
+                                    </div>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-4 flex-grow">

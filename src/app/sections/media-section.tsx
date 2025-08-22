@@ -103,7 +103,7 @@ export default function MediaSection({ onIframeOpen }: MediaSectionProps) {
 
     return (
         <div className="py-8 px-4 animate-fadeIn">
-            <h1 className="mb-8 text-center text-4xl font-bold font-headline text-foreground">Media Collection</h1>
+            <h1 className="mb-8 text-center text-4xl font-bold font-headline text-foreground">Media</h1>
             
             <Card className="mb-8 p-4 md:p-6">
                 <div className="flex flex-col md:flex-row gap-4">
