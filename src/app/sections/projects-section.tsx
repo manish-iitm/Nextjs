@@ -1,16 +1,18 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Loader2, Info } from 'lucide-react';
+import { Search, Loader2, Info, Filter } from 'lucide-react';
 import type { Project } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { ProjectCard } from '@/components/project-card';
 import { Card } from '@/components/ui/card';
 import type { ProjectCategory } from '@/app/page';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface ProjectsSectionProps {
   onIframeOpen: (url: string, title: string) => void;
-  category: ProjectCategory;
+  initialCategory: ProjectCategory;
 }
 
 const PROJECTS_URL = 'https://docs.google.com/spreadsheets/d/13ZV6BXtXKp9aQCKc0OHQoLFCRrif32zvx4khFc4bR9w/export?format=csv';
@@ -21,12 +23,23 @@ const categoryDescriptions: { [key in ProjectCategory & string]: string } = {
   Gamma: 'Gamma is for projects that are ready to use.',
 };
 
+const filterCategories: { label: string; value: ProjectCategory }[] = [
+  { label: 'All', value: null },
+  { label: 'Alpha', value: 'Alpha' },
+  { label: 'Beta', value: 'Beta' },
+  { label: 'Gamma', value: 'Gamma' },
+];
 
-export default function ProjectsSection({ onIframeOpen, category }: ProjectsSectionProps) {
+export default function ProjectsSection({ onIframeOpen, initialCategory }: ProjectsSectionProps) {
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<ProjectCategory>(initialCategory);
+
+  useEffect(() => {
+    setActiveCategory(initialCategory);
+  }, [initialCategory]);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -58,37 +71,50 @@ export default function ProjectsSection({ onIframeOpen, category }: ProjectsSect
 
   const filteredProjects = useMemo(() => {
     let projects = allProjects;
-    if (category) {
-      projects = projects.filter(p => p.category?.toLowerCase() === category.toLowerCase());
+    if (activeCategory) {
+      projects = projects.filter(p => p.category?.toLowerCase() === activeCategory.toLowerCase());
     }
     if (searchTerm) {
       projects = projects.filter(p => p.search.includes(searchTerm.toLowerCase()));
     }
     return projects;
-  }, [allProjects, searchTerm, category]);
+  }, [allProjects, searchTerm, activeCategory]);
 
-  const description = category ? categoryDescriptions[category] : null;
+  const description = activeCategory ? categoryDescriptions[activeCategory] : 'Browse all available projects.';
 
   return (
     <div className="py-8 px-4 animate-fadeIn">
       <h1 className="mb-4 text-center text-4xl font-bold font-headline text-foreground">
-        {category ? `${category} Projects` : 'All Projects'}
+        Projects
       </h1>
-      {description && (
-        <p className="mb-8 text-center text-lg text-muted-foreground max-w-2xl mx-auto">{description}</p>
-      )}
+      <p className="mb-8 text-center text-lg text-muted-foreground max-w-2xl mx-auto">{description}</p>
+      
       <Card className="p-6 md:p-8">
-        <div className="relative mx-auto mb-8 max-w-lg">
-          <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="search"
-            id="projectSearchBar"
-            placeholder="Search projects by name..."
-            className="w-full rounded-full bg-background pl-10 pr-4 py-2 text-lg"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            aria-label="Search projects"
-          />
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="relative flex-grow">
+            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              id="projectSearchBar"
+              placeholder="Search projects..."
+              className="w-full rounded-full bg-background pl-10 pr-4 py-2 text-lg"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              aria-label="Search projects"
+            />
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            {filterCategories.map(cat => (
+              <Button
+                key={cat.label}
+                variant={activeCategory === cat.value ? 'default' : 'outline'}
+                onClick={() => setActiveCategory(cat.value)}
+                className="rounded-full"
+              >
+                {cat.label}
+              </Button>
+            ))}
+          </div>
         </div>
 
         {isLoading ? (
@@ -107,7 +133,7 @@ export default function ProjectsSection({ onIframeOpen, category }: ProjectsSect
           <div className="flex flex-col items-center justify-center gap-4 py-20 text-center text-muted-foreground">
             <Info className="h-10 w-10 text-primary" />
             <p className="text-lg font-medium">No projects match your search.</p>
-            <p className="text-sm">Try clearing the category filter or searching for something else.</p>
+            <p className="text-sm">Try a different filter or search term.</p>
           </div>
         )}
       </Card>

@@ -96,7 +96,7 @@ export default function Home() {
       case 'home':
         return <HomeSection onIframeOpen={handleIframeOpen} />;
       case 'projects':
-        return <ProjectsSection onIframeOpen={handleIframeOpen} category={projectCategory} />;
+        return <ProjectsSection onIframeOpen={handleIframeOpen} initialCategory={projectCategory} />;
       case 'contact':
         return <ContactSection />;
       case 'settings':
