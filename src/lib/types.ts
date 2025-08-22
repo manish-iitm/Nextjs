@@ -47,3 +47,10 @@ export interface Game {
     link: string;
     category: string;
 }
+
+export interface Media {
+    title: string;
+    thumbnail: string;
+    link: string;
+    category: string;
+}
