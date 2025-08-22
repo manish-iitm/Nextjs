@@ -91,7 +91,12 @@ export default function CoursesSection({ onIframeOpen }: CoursesSectionProps) {
     
     const handleLinkClick = (url: string, title: string) => {
         if(url && url !== '#') {
-            onIframeOpen(url, title);
+            // Check if the link can be embedded, otherwise open in new tab
+            if (url.includes('youtube.com') || url.includes('youtu.be') || url.includes('spotify.com') || url.includes('vimeo.com')) {
+                window.open(url, '_blank');
+            } else {
+                onIframeOpen(url, title);
+            }
         }
     }
 
