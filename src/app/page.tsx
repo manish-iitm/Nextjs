@@ -8,6 +8,7 @@ import SettingsSection from '@/app/sections/settings-section';
 import DealsSection from '@/app/sections/deals-section';
 import GamesSection from '@/app/sections/games-section';
 import MediaSection from '@/app/sections/media-section';
+import CoursesSection from '@/app/sections/courses-section';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import { IframeModal } from '@/components/layout/iframe-modal';
 import { AnnouncementSheet } from '@/components/announcement-sheet';
@@ -106,6 +107,8 @@ export default function Home() {
         return <GamesSection onIframeOpen={handleIframeOpen} />;
       case 'media':
         return <MediaSection onIframeOpen={handleIframeOpen} />;
+      case 'courses':
+        return <CoursesSection onIframeOpen={handleIframeOpen} />;
       case 'contact':
         return <ContactSection />;
       case 'settings':

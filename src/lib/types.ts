@@ -54,3 +54,11 @@ export interface Media {
     link: string;
     category: string;
 }
+
+export interface Course {
+    title: string;
+    thumbnail: string;
+    lectureLink: string;
+    testLink: string;
+    category: string;
+}
