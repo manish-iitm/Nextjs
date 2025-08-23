@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useMemo, ReactNode } from 'react';
@@ -98,6 +99,11 @@ export default function MediaSection({ onIframeOpen }: MediaSectionProps) {
     const handleMediaClick = (media: Media) => {
         if(media.link && media.link !== '#') {
             let url = media.link;
+             if (url.includes('spotify.com')) {
+                window.open(url, '_blank', 'noopener,noreferrer');
+                return;
+            }
+
             if (url.includes("youtube.com/watch")) {
                 const videoId = new URL(url).searchParams.get("v");
                 if (videoId) {
@@ -108,8 +114,6 @@ export default function MediaSection({ onIframeOpen }: MediaSectionProps) {
                  if (videoId) {
                     url = `https://www.youtube.com/embed/${videoId}`;
                 }
-            } else if (url.includes("open.spotify.com")) {
-                url = url.replace("open.spotify.com/", "open.spotify.com/embed/");
             }
             onIframeOpen(url, media.title);
         }
