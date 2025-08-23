@@ -97,7 +97,7 @@ export default function MediaSection({ onIframeOpen }: MediaSectionProps) {
     
     const handleMediaClick = (media: Media) => {
         if(media.link && media.link !== '#') {
-            window.open(media.link, '_blank');
+            onIframeOpen(media.link, media.title);
         }
     }
 
