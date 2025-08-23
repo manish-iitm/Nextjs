@@ -108,6 +108,8 @@ export default function MediaSection({ onIframeOpen }: MediaSectionProps) {
                  if (videoId) {
                     url = `https://www.youtube.com/embed/${videoId}`;
                 }
+            } else if (url.includes("open.spotify.com")) {
+                url = url.replace("open.spotify.com/", "open.spotify.com/embed/");
             }
             onIframeOpen(url, media.title);
         }
@@ -155,14 +157,14 @@ export default function MediaSection({ onIframeOpen }: MediaSectionProps) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {Array.from({ length: 8 }).map((_, index) => (
                         <Card key={index}>
-                           <CardHeader>
+                           <CardHeader className="p-0">
                                 <Skeleton className="h-40 w-full" />
                            </CardHeader>
-                           <CardContent>
+                           <CardContent className="p-4">
                                 <Skeleton className="h-6 w-3/4 mb-2" />
                                 <Skeleton className="h-4 w-1/2" />
                            </CardContent>
-                           <CardFooter>
+                           <CardFooter className="p-0">
                                 <Skeleton className="h-10 w-full" />
                            </CardFooter>
                         </Card>
