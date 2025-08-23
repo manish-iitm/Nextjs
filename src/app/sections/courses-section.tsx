@@ -91,7 +91,19 @@ export default function CoursesSection({ onIframeOpen }: CoursesSectionProps) {
     
     const handleLinkClick = (url: string, title: string) => {
         if(url && url !== '#') {
-            onIframeOpen(url, title);
+            let embedUrl = url;
+            if (embedUrl.includes("youtube.com/watch")) {
+                const videoId = new URL(embedUrl).searchParams.get("v");
+                if (videoId) {
+                    embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                }
+            } else if (embedUrl.includes("youtu.be/")) {
+                const videoId = new URL(embedUrl).pathname.substring(1);
+                 if (videoId) {
+                    embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                }
+            }
+            onIframeOpen(embedUrl, title);
         }
     }
 

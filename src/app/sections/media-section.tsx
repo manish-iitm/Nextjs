@@ -97,7 +97,19 @@ export default function MediaSection({ onIframeOpen }: MediaSectionProps) {
     
     const handleMediaClick = (media: Media) => {
         if(media.link && media.link !== '#') {
-            onIframeOpen(media.link, media.title);
+            let url = media.link;
+            if (url.includes("youtube.com/watch")) {
+                const videoId = new URL(url).searchParams.get("v");
+                if (videoId) {
+                    url = `https://www.youtube.com/embed/${videoId}`;
+                }
+            } else if (url.includes("youtu.be/")) {
+                const videoId = new URL(url).pathname.substring(1);
+                 if (videoId) {
+                    url = `https://www.youtube.com/embed/${videoId}`;
+                }
+            }
+            onIframeOpen(url, media.title);
         }
     }
 
