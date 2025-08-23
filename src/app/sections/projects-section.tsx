@@ -4,8 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Loader2, Info, Filter, Briefcase } from 'lucide-react';
 import type { Project } from '@/lib/types';
 import { Input } from '@/components/ui/input';
-import { ProjectCard } from '@/components/project-card';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardContent, CardFooter, CardTitle } from '@/components/ui/card';
 import type { ProjectCategory } from '@/app/page';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -128,7 +127,7 @@ export default function ProjectsSection({ onIframeOpen, initialCategory }: Proje
           <div id="projectGrid" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredProjects.map(project => (
                <Card key={project.name} className="flex flex-col overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <Card.Header className="p-0">
+                <CardHeader className="p-0">
                   <div className="relative aspect-video w-full">
                     <Image
                       src={project.icon || 'https://placehold.co/600x400'}
@@ -142,18 +141,18 @@ export default function ProjectsSection({ onIframeOpen, initialCategory }: Proje
                       <Briefcase />
                     </div>
                   </div>
-                </Card.Header>
-                <Card.Content className="p-4 flex-grow">
-                  <Card.Title className="text-lg leading-snug mb-2">{project.name}</Card.Title>
+                </CardHeader>
+                <CardContent className="p-4 flex-grow">
+                  <CardTitle className="text-lg leading-snug mb-2">{project.name}</CardTitle>
                   <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-secondary text-secondary-foreground">
                     {project.category}
                   </span>
-                </Card.Content>
-                <Card.Footer className="p-0">
+                </CardContent>
+                <CardFooter className="p-0">
                   <Button onClick={() => onIframeOpen(project.link, project.name)} className="w-full rounded-t-none" variant="default">
                     View Project
                   </Button>
-                </Card.Footer>
+                </CardFooter>
               </Card>
             ))}
           </div>
