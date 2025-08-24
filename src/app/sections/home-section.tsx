@@ -44,7 +44,7 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
         const parsedStories = data.split('\n').slice(1).map((line, index) => {
           const [thumbUrl, imageUrl, link, title] = line.split(',').map(c => c.trim());
           return { id: `story-${index}`, thumbUrl, imageUrl, link, title: title || 'Untitled' };
-        }).filter(s => s.thumbUrl && s.imageUrl);
+        }).filter(s => s.thumbUrl && s.imageUrl).reverse();
 
         parsedStories.sort((a,b) => (storedViewed.has(a.id) ? 1 : -1) - (storedViewed.has(b.id) ? 1 : -1));
         setStories(parsedStories);
@@ -63,7 +63,7 @@ export default function HomeSection({ onIframeOpen }: HomeSectionProps) {
         const parsedPosts = data.split('\n').slice(1).map(line => {
           const [imageUrl, title, link] = line.split(',').map(c => c.trim());
           return { imageUrl, title: title || 'Untitled', link: link || '#' };
-        }).filter(p => p.imageUrl);
+        }).filter(p => p.imageUrl).reverse();
         setPosts(parsedPosts);
       } catch (err) {
         setErrorPosts('Failed to load posts.');

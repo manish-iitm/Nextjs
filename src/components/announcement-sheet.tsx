@@ -35,7 +35,7 @@ const parseCSV = (csvData: string): NewsItem[] => {
             }
         }
     }
-    return items.filter(item => item.title && item.title !== 'No Title');
+    return items.filter(item => item.title && item.title !== 'No Title').reverse();
 };
 
 

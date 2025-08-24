@@ -24,7 +24,7 @@ const getSampleData = (): Article[] => [
     { title: "Best Practices for Remote Work", thumbnail: "https://placehold.co/600x400", link: "#", category: "Career" },
     { title: "Introduction to Blockchain Technology", thumbnail: "https://placehold.co/600x400", link: "#", category: "Technology" },
     { title: "Mental Health in the Tech Industry", thumbnail: "https://placehold.co/600x400", link: "#", category: "Health" }
-];
+].reverse();
 
 const parseCSV = (csv: string): Article[] => {
     const lines = csv.split('\n');
@@ -43,7 +43,7 @@ const parseCSV = (csv: string): Article[] => {
             }
         }
     }
-    return result;
+    return result.reverse();
 };
 
 

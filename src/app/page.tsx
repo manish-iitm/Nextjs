@@ -55,7 +55,7 @@ export default function Home() {
               author: item.author || 'Author',
               thumbnail: item.thumbnail || '',
               description: item.description || '',
-            })).filter(item => item.title && item.pubDate);
+            })).filter(item => item.title && item.pubDate).reverse();
             setNews(items);
             
             const lastReadCount = parseInt(localStorage.getItem('lastReadNewsCount') || '0', 10);
@@ -82,7 +82,27 @@ export default function Home() {
   };
 
   const handleIframeOpen = useCallback((url: string, title: string) => {
-    setIframeState({ isOpen: true, url, title });
+    let embedUrl = url;
+    if (url.includes('spotify.com/playlist') || url.includes('spotify.com/album') || url.includes('spotify.com/track')) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+      return;
+    } else if (url.includes('spotify.com')) {
+      embedUrl = url.replace('spotify.com', 'spotify.com/embed');
+    }
+    
+    if (embedUrl.includes("youtube.com/watch")) {
+        const videoId = new URL(embedUrl).searchParams.get("v");
+        if (videoId) {
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
+    } else if (embedUrl.includes("youtu.be/")) {
+        const videoId = new URL(embedUrl).pathname.substring(1);
+          if (videoId) {
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
+    }
+
+    setIframeState({ isOpen: true, url: embedUrl, title });
     document.body.style.overflow = 'hidden';
   }, []);
 

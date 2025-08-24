@@ -24,7 +24,7 @@ const getSampleData = (): Course[] => [
     { title: "Graphic Design Masterclass", thumbnail: "https://placehold.co/600x400", lectureLink: "#", testLink: "#", category: "Design" },
     { title: "Digital Marketing Strategies", thumbnail: "https://placehold.co/600x400", lectureLink: "#", testLink: "#", category: "Marketing" },
     { title: "Mobile App Development", thumbnail: "https://placehold.co/600x400", lectureLink: "#", testLink: "#", category: "Programming" }
-];
+].reverse();
 
 const parseCSV = (csv: string): Course[] => {
     const lines = csv.split('\n');
@@ -44,7 +44,7 @@ const parseCSV = (csv: string): Course[] => {
             }
         }
     }
-    return result;
+    return result.reverse();
 };
 
 
@@ -91,19 +91,7 @@ export default function CoursesSection({ onIframeOpen }: CoursesSectionProps) {
     
     const handleLinkClick = (url: string, title: string) => {
         if(url && url !== '#') {
-            let embedUrl = url;
-            if (embedUrl.includes("youtube.com/watch")) {
-                const videoId = new URL(embedUrl).searchParams.get("v");
-                if (videoId) {
-                    embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                }
-            } else if (embedUrl.includes("youtu.be/")) {
-                const videoId = new URL(embedUrl).pathname.substring(1);
-                 if (videoId) {
-                    embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                }
-            }
-            onIframeOpen(embedUrl, title);
+            onIframeOpen(url, title);
         }
     }
 

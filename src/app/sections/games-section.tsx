@@ -24,7 +24,7 @@ const getSampleData = (): Game[] => [
     { title: "Racing Extreme", thumbnail: "https://placehold.co/600x400", link: "#", category: "Racing" },
     { title: "Word Puzzle", thumbnail: "https://placehold.co/600x400", link: "#", category: "Puzzle" },
     { title: "Fantasy Quest", thumbnail: "https://placehold.co/600x400", link: "#", category: "RPG" }
-];
+].reverse();
 
 const parseCSV = (csv: string): Game[] => {
     const lines = csv.split('\n');
@@ -43,7 +43,7 @@ const parseCSV = (csv: string): Game[] => {
             }
         }
     }
-    return result;
+    return result.reverse();
 };
 
 const getPlatformInfo = (link: string): { icon: ReactNode, text: string } => {

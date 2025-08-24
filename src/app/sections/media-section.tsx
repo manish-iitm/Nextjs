@@ -25,7 +25,7 @@ const getSampleData = (): Media[] => [
     { title: "Documentary: The Deep Ocean", thumbnail: "https://placehold.co/600x400", link: "https://vimeo.com/22439234", category: "Documentary" },
     { title: "Top 100 Greatest Songs", thumbnail: "https://placehold.co/600x400", link: "https://open.spotify.com/playlist/37i9dQZF1DX4JAvHpjipBk", category: "Music" },
     { title: "Web Development Masterclass", thumbnail: "https://placehold.co/600x400", link: "https://www.youtube.com/watch?v=8ASjS4E9iq4", category: "Education" }
-];
+].reverse();
 
 const parseCSV = (csv: string): Media[] => {
     const lines = csv.split('\n');
@@ -44,7 +44,7 @@ const parseCSV = (csv: string): Media[] => {
             }
         }
     }
-    return result;
+    return result.reverse();
 };
 
 const getPlatformInfo = (link: string): { icon: ReactNode, text: string } => {
@@ -98,24 +98,7 @@ export default function MediaSection({ onIframeOpen }: MediaSectionProps) {
     
     const handleMediaClick = (media: Media) => {
         if(media.link && media.link !== '#') {
-            let url = media.link;
-             if (url.includes('spotify.com')) {
-                window.open(url, '_blank', 'noopener,noreferrer');
-                return;
-            }
-
-            if (url.includes("youtube.com/watch")) {
-                const videoId = new URL(url).searchParams.get("v");
-                if (videoId) {
-                    url = `https://www.youtube.com/embed/${videoId}`;
-                }
-            } else if (url.includes("youtu.be/")) {
-                const videoId = new URL(url).pathname.substring(1);
-                 if (videoId) {
-                    url = `https://www.youtube.com/embed/${videoId}`;
-                }
-            }
-            onIframeOpen(url, media.title);
+            onIframeOpen(media.link, media.title);
         }
     }
 

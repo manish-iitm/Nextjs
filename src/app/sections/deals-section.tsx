@@ -24,7 +24,7 @@ const getSampleData = (): Deal[] => [
     { name: "WordPress Plugin Bundle", thumbnail: "https://placehold.co/600x400", link: "#", category: "Plugins" },
     { name: "Social Media Scheduler", thumbnail: "https://placehold.co/600x400", link: "#", category: "Marketing" },
     { name: "Email Marketing Service", thumbnail: "https://placehold.co/600x400", link: "#", category: "Marketing" }
-];
+].reverse();
 
 const parseCSV = (csv: string): Deal[] => {
     const lines = csv.split('\n');
@@ -43,7 +43,7 @@ const parseCSV = (csv: string): Deal[] => {
             }
         }
     }
-    return result;
+    return result.reverse();
 };
 
 

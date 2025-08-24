@@ -57,7 +57,8 @@ export default function ProjectsSection({ onIframeOpen, initialCategory }: Proje
             const [name, icon, link, category] = line.split(',').map(p => p.trim());
             return { name, icon, link, category, search: (name || '').toLowerCase() };
           })
-          .filter(p => p.name && p.link);
+          .filter(p => p.name && p.link)
+          .reverse();
         setAllProjects(projectsData);
       } catch (e) {
         console.error('Error fetching projects:', e);
